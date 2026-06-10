@@ -7,19 +7,19 @@
 <title>Nights — 10–11 Jun</title>
 <style>
   :root {
-    --bg: #12141a;
-    --card: #1b1e27;
-    --card-past: #161922;
-    --text: #d6d9e0;
-    --text-dim: #8a8fa0;
-    --line: #2a2e3b;
-    --accent: #e8b25a;          /* warm amber — easy on night eyes */
-    --sleep: #8e9ed6;
-    --caffeine: #d6a35c;
-    --food: #8fbf8f;
-    --light: #d9cd7a;
-    --safety: #d68a7a;
-    --shift: #9aa0b0;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --card-past: #eef0f4;
+    --text: #23262e;
+    --text-dim: #5f6575;
+    --line: #e2e4ea;
+    --accent: #b07a1f;
+    --sleep: #5468bd;
+    --caffeine: #a8732a;
+    --food: #3f8a52;
+    --light: #a3901f;
+    --safety: #bf5b49;
+    --shift: #8a8fa0;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
@@ -60,7 +60,7 @@
   .pill {
     font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
     padding: 0.1rem 0.45rem; border-radius: 99px;
-    background: var(--accent); color: #14161c;
+    background: var(--accent); color: #ffffff;
   }
   .pill.next { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
   .tag {
@@ -142,22 +142,16 @@
 </head>
 <body>
 
-<header>
-  <h1>Nights — Wed 10 &amp; Thu 11 Jun</h1>
-  <p>2 in-house nights, 19:45–08:15 · ~50 min drive · camping Fri–Sun.<br>
-  ShiftSync protocol v1.2, personal prototype — schedule, not a tracker.</p>
-</header>
-
 <section class="tl-wrap">
-  <div class="tl-head">The block at a glance — scroll →</div>
+  <div class="tl-head">Nights — Wed 10 &amp; Thu 11 Jun · scroll →</div>
   <div class="tl-flex">
     <div class="tl-labels" id="tl-labels"><div class="tl-axis-spacer"></div></div>
     <div class="tl-scroll" id="tl-scroll"></div>
   </div>
   <div class="tl-detail" id="tl-detail"><span class="n">Tap any bar</span> to see what it is and why it's there.</div>
   <div class="tl-legend">
-    <span style="--sw:#8e9ed6">Sleep</span><span style="--sw:#d9cd7a">Light</span><span style="--sw:#d6a35c">Caffeine</span><span style="--sw:#8fbf8f">Meals</span><span style="--sw:#d68a7a">Drives</span>
-    <span style="--sw:#262a38">On shift</span>
+    <span style="--sw:#5468bd">Sleep</span><span style="--sw:#a3901f">Light</span><span style="--sw:#a8732a">Caffeine</span><span style="--sw:#3f8a52">Meals</span><span style="--sw:#bf5b49">Drives</span>
+    <span style="--sw:#e7e9f0">On shift</span>
   </div>
   <div class="tl-legend" style="padding-top:0.25rem">Dashed bars = avoid / only-if-needed. Purple curve = illustrative fatigue shape, not a computed score.</div>
 </section>
@@ -239,7 +233,7 @@ const S = [
     items: [
       { t: ["2026-06-11T19:45", "2026-06-12T02:00"], label: "19:45–02:00", type: "light",
         title: "Same playbook: bright light first half", tag: "§5b.3",
-        body: "Near bright light until ~02:00, dim after 06:15. One extra job tonight: <strong>decide now what you'll eat tomorrow</strong> — rebound overeating on the day after nights is the classic failure, and you'll be packing for camping with a foggy head (§5c.5)." },
+        body: "Near bright light until ~02:00, dim after 06:15. One extra job tonight: <strong>decide now what you'll eat tomorrow</strong> — rebound overeating on the day after nights is the classic failure (§5c.5)." },
       { t: ["2026-06-11T21:00", "2026-06-11T23:00"], label: "21:00–23:00", type: "caffeine",
         title: "Caffeine dose 1 (≤200 mg)", tag: "§5b.4",
         body: "Same rules as last night: max 2 doses, both before 02:00." },
@@ -256,31 +250,31 @@ const S = [
         title: "Wind the light down", tag: "§5b.3",
         body: "Last 2 h dim. Your morning sleep today is short by design — protect it." },
     ]},
-  { day: "Fri 12 Jun — coming off nights → camping",
+  { day: "Fri 12 Jun — coming off nights",
     items: [
       { t: ["2026-06-12T08:15", "2026-06-12T09:15"], label: "08:15", type: "safety",
-        title: "Commute toolbox again — and go home, not to Cedar Valley", tag: "§5d.1 · Strong",
-        body: "Same checklist as yesterday (cafnap if drowsy, cold air, ETA, one stop, pull over early, not the middle lane). <strong>Do not drive to the campsite straight off shift</strong> — home, blackout, sleep first." },
+        title: "Commute toolbox again — then straight to bed", tag: "§5d.1 · Strong",
+        body: "Same checklist as yesterday (cafnap if drowsy, cold air, ETA, one stop, pull over early, not the middle lane). <strong>Go home and sleep before anything else today</strong> — no onward errands straight off shift." },
       { t: ["2026-06-12T09:30", "2026-06-12T13:30"], label: "09:30–13:30", type: "sleep",
-        title: "Truncated anchor sleep — ~4 h, at home", tag: "§5c.2 · Moderate",
-        body: "Short on purpose: clears the acute debt while leaving enough sleep pressure to fall asleep in the tent tonight.",
-        detail: "Day sleep self-caps at ~6.4 h regardless of how long you give it (Jackson 2014), so ~4 h is near the natural ceiling, not heroic restraint. Window flexibility: start 09:00–11:00, length 3.5–5 h. <em>If you're truly wrecked, sleep what you need</em> and accept the re-sync takes a day longer — the camping weekend is forgiving of that." },
+        title: "Truncated anchor sleep — ~4 h", tag: "§5c.2 · Moderate",
+        body: "Short on purpose: clears the acute debt while leaving enough sleep pressure to fall asleep at a normal bedtime tonight.",
+        detail: "Day sleep self-caps at ~6.4 h regardless of how long you give it (Jackson 2014), so ~4 h is near the natural ceiling, not heroic restraint. Window flexibility: start 09:00–11:00, length 3.5–5 h. <em>If you're truly wrecked, sleep what you need</em> and accept the re-sync takes a day longer." },
       { t: ["2026-06-12T13:30", "2026-06-12T14:00"], label: "13:30–14:00", type: "caffeine",
         title: "Wake — one coffee, then caffeine's done for the day", tag: "§5c.4",
-        body: "≤200 mg on waking is fine. <strong>Nothing after ~14:00</strong> — tonight's tent sleep needs all the help it can get." },
+        body: "≤200 mg on waking is fine. <strong>Nothing after ~14:00</strong> — it protects tonight's sleep at a normal bedtime." },
       { t: ["2026-06-12T14:00", "2026-06-12T21:00"], label: "14:00→", type: "light",
-        title: "Daylight + breakfast + load the car", tag: "§5c.3/§5c.5",
-        body: "Eat on waking. ≥30–60 min of outdoor light this afternoon pushes your clock back to daytime — packing, the drive, and pitching the tent all count. Normal dinner by 19:00–20:00, nothing after 21:00. You've had 4 h sleep — far safer to drive than straight off shift, but keep the toolbox live if you feel drowsy." },
+        title: "Daylight + breakfast", tag: "§5c.3/§5c.5",
+        body: "Eat on waking. ≥30–60 min of outdoor light this afternoon pushes your clock back to daytime. Normal dinner by 19:00–20:00, nothing after 21:00. If you need to drive today, you've had 4 h sleep — far safer than straight off shift, but keep the toolbox live if you feel drowsy." },
       { t: ["2026-06-12T22:00", "2026-06-12T23:00"], label: "22:00–23:00", type: "sleep",
-        title: "Bedtime — in a tent", tag: "§5c.2 + caveat",
-        body: "Normal bedtime even while camping. Tent reality: dawn light from ~04:45 plus birdsong will pull you early — <strong>pack an eye mask and earplugs</strong>.",
-        detail: "A tent is the opposite of the blackout bedroom §5c assumes — this weekend is a live stress test of the post-block protocol in a non-ideal setting. Early daylight actually helps shift your clock back to daytime; it just costs sleep length. Note what breaks." },
+        title: "Bedtime — back to normal", tag: "§5c.2",
+        body: "Normal bedtime tonight. The truncated anchor this morning is what makes falling asleep now possible.",
+        detail: "If tonight's sleep environment is bright or noisy, an eye mask and earplugs protect the reset — early-morning light will pull you awake before you're recovered." },
     ]},
   { day: "Sat 13 Jun — soft day",
     items: [
       { t: ["2026-06-13T08:00", "2026-06-13T22:00"], label: "All day", type: "shift",
         title: "Expect ~80% — and that's fine", tag: "§5c.6 · Moderate",
-        body: "Day 1 after a block is the soft day: low cognitive load (camping is ideal), daylight through the day, early-ish bedtime 21:30–22:00, normal wake Sunday. Full re-alignment takes 1–2 days when the block went to plan." },
+        body: "Day 1 after a block is the soft day: low cognitive load, daylight through the day, early-ish bedtime 21:30–22:00, normal wake Sunday. Full re-alignment takes 1–2 days when the block went to plan." },
     ]},
 ];
 
@@ -331,15 +325,16 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
 (function () {
   const T0 = new Date("2026-06-10T12:00");            // Wed noon
   const T1 = new Date("2026-06-14T00:00");            // Sat midnight
-  const PXH = 30;                                     // px per hour
+  const PXH = 34;                                     // px per hour
   const AXH = 34;                                     // axis height
-  const LH  = 40;                                     // lane height
+  // Lane height scales so the timeline fills ~62% of a portrait viewport.
+  const LH = Math.max(46, Math.min(92, Math.round((window.innerHeight * 0.62 - AXH) / 5)));
   const LANES = [
-    { key: "Sleep",    c: "#8e9ed6" },
-    { key: "Light",    c: "#d9cd7a" },
-    { key: "Caffeine", c: "#d6a35c" },
-    { key: "Meals",    c: "#8fbf8f" },
-    { key: "Drives",   c: "#d68a7a" },
+    { key: "Sleep",    c: "#5468bd" },
+    { key: "Light",    c: "#a3901f" },
+    { key: "Caffeine", c: "#a8732a" },
+    { key: "Meals",    c: "#3f8a52" },
+    { key: "Drives",   c: "#bf5b49" },
   ];
   // [lane, start, end, label, kind(seek|avoid), clause, why]
   const W = [
@@ -347,8 +342,8 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
     [0,"2026-06-11T02:00","2026-06-11T03:00","Strategic nap","seek","§5b.2 · Strong","~30 min, workload permitting — the best-evidenced intervention in the protocol. Caffeine just before = cafnap."],
     [0,"2026-06-11T10:00","2026-06-11T18:00","Anchor sleep ~8 h","seek","§5b.1 · Moderate","Blackout, phone off. Anchored late so you wake ~2 h before night 2, not 8 h before it."],
     [0,"2026-06-12T02:00","2026-06-12T03:00","Strategic nap","seek","§5b.2","Same as last night — alarm at 30 min."],
-    [0,"2026-06-12T09:30","2026-06-12T13:30","Truncated anchor ~4 h","seek","§5c.2 · Moderate","Short on purpose: clears acute debt, leaves enough pressure to sleep in the tent tonight. At home, before the campsite drive."],
-    [0,"2026-06-12T22:00","2026-06-13T07:00","Tent night sleep","seek","§5c.2","Normal bedtime even camping. Eye mask + earplugs — dawn light from ~04:45."],
+    [0,"2026-06-12T09:30","2026-06-12T13:30","Truncated anchor ~4 h","seek","§5c.2 · Moderate","Short on purpose: clears acute debt while leaving enough sleep pressure for a normal bedtime tonight."],
+    [0,"2026-06-12T22:00","2026-06-13T07:00","Night sleep","seek","§5c.2","Normal bedtime — the truncated anchor is what makes this possible."],
     [0,"2026-06-13T21:30","2026-06-14T00:00","Early bedtime","seek","§5c.6","Soft-day close: 21:30–22:00 down, normal wake Sunday."],
     [1,"2026-06-10T19:45","2026-06-11T02:00","Bright light","seek","§5b.3 · Strong","Stay near bright light until ~02:00 where workload allows — holds melatonin off through the night."],
     [1,"2026-06-11T06:15","2026-06-11T08:15","Dim down","avoid","§5b.3","Avoid bright light for the last 2 h — lets melatonin rise for the morning sleep."],
@@ -357,7 +352,7 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
     [1,"2026-06-11T19:45","2026-06-12T02:00","Bright light","seek","§5b.3","Night 2, same pattern: bright until ~02:00."],
     [1,"2026-06-12T06:15","2026-06-12T08:15","Dim down","avoid","§5b.3","Last 2 h dim — protects the short morning sleep."],
     [1,"2026-06-12T08:15","2026-06-12T09:15","Blue-blockers","avoid","§5a","Amber glasses for the drive home."],
-    [1,"2026-06-12T14:00","2026-06-12T21:00","Afternoon daylight","seek","§5c.3 · Moderate","≥30–60 min outdoors pushes your clock back to daytime — packing and pitching the tent counts."],
+    [1,"2026-06-12T14:00","2026-06-12T21:00","Afternoon daylight","seek","§5c.3 · Moderate","≥30–60 min outdoors this afternoon pushes your clock back to daytime."],
     [1,"2026-06-13T09:00","2026-06-13T19:00","Daylight all day","seek","§5c.6","Keep getting daylight — finishes the re-sync."],
     [2,"2026-06-10T21:00","2026-06-10T23:00","Dose 1 ≤200 mg","seek","§5b.4","One coffee. Max 2 doses a night, both before 02:00. No energy drinks any night."],
     [2,"2026-06-11T01:00","2026-06-11T02:00","Dose 2 (cafnap)","seek","§5b.4","Optional ≤200 mg immediately before the nap. Hard stop 02:00."],
@@ -365,7 +360,7 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
     [2,"2026-06-11T21:00","2026-06-11T23:00","Dose 1 ≤200 mg","seek","§5b.4","Same rules as last night."],
     [2,"2026-06-12T01:00","2026-06-12T02:00","Dose 2 (cafnap)","seek","§5b.4","Optional, before the nap. Nothing after 02:00."],
     [2,"2026-06-12T08:15","2026-06-12T08:45","Carve-out if drowsy","avoid","§5d.1","Safety override again — recoverable sleep cost beats a crash."],
-    [2,"2026-06-12T13:30","2026-06-12T14:00","Wake coffee — last one","seek","§5c.4","≤200 mg on waking, then done by 14:00 to protect tent sleep."],
+    [2,"2026-06-12T13:30","2026-06-12T14:00","Wake coffee — last one","seek","§5c.4","≤200 mg on waking, then done by 14:00 to protect tonight's sleep."],
     [3,"2026-06-10T17:30","2026-06-10T18:30","Main meal","seek","§5b.5","Hot meal at home + pack meal-prep for the work window."],
     [3,"2026-06-10T19:45","2026-06-10T22:00","Work eating window","seek","§5b.5","Finish all food by 22:00."],
     [3,"2026-06-10T22:00","2026-06-11T06:00","Fast","avoid","§5a · Moderate","No eating overnight — water + in-window caffeine only. Low-GI snack only if hunger compromises clinical safety."],
@@ -374,13 +369,12 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
     [3,"2026-06-11T19:45","2026-06-11T22:00","Work eating window","seek","§5b.5","Meal-prep again; done by 22:00."],
     [3,"2026-06-11T22:00","2026-06-12T06:00","Fast","avoid","§5a","Same as night 1."],
     [3,"2026-06-12T13:30","2026-06-12T14:30","Breakfast on wake","seek","§5c.5","Eat on waking — you pre-planned this on night 2."],
-    [3,"2026-06-12T18:00","2026-06-12T20:00","Dinner by 20:00","seek","§5c.5","Normal evening meal, camp stove or otherwise."],
+    [3,"2026-06-12T18:00","2026-06-12T20:00","Dinner by 20:00","seek","§5c.5","Normal evening meal at a normal time."],
     [3,"2026-06-12T21:00","2026-06-12T23:00","No food after 21:00","avoid","§5c.5","Protects tonight's sleep and the metabolic reset."],
     [4,"2026-06-10T18:50","2026-06-10T19:40","Drive in","seek","","~50 min, arrive for 19:45."],
     [4,"2026-06-11T08:15","2026-06-11T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Cafnap first if drowsy. Cold air, share ETA, one stop halfway, pull over the moment you feel drowsy, not the middle lane."],
     [4,"2026-06-11T18:50","2026-06-11T19:40","Drive in","seek","","Night 2 commute."],
-    [4,"2026-06-12T08:15","2026-06-12T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Same checklist. Home and bed — NOT straight to Cedar Valley."],
-    [4,"2026-06-12T14:30","2026-06-12T16:00","Drive to Cedar Valley","seek","§5d.1","Whenever you're ready after the anchor sleep. Far safer than post-shift, but toolbox stays live if drowsy."],
+    [4,"2026-06-12T08:15","2026-06-12T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Same checklist. Then straight home and to bed — no onward errands."],
   ];
   // Illustrative fatigue shape: [hours after Wed 12:00, value 45–90]
   const CURVE = [[0,86],[3,80],[5,78],[5.6,84],[8,84],[11,78],[13,70],[14,66],[15,64],[15.6,70],[17,63],[19,62],[20.3,63],[21.5,60],[26,70],[30,82],[32,82],[35,75],[37,67],[39,60],[39.6,65],[41,57],[43,55],[44.3,56],[45.5,54],[49.5,66],[52,70],[55,68],[58,62],[67,78],[70,82],[74,84],[78,83],[81,80],[84,78]];
@@ -396,42 +390,43 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
 
   // shift shading + labels
   for (const [s, e, lab] of SHIFTS) {
-    svg += '<rect x="' + x(s) + '" y="' + AXH + '" width="' + (x(e) - x(s)) + '" height="' + LANEH + '" fill="#262a38" opacity="0.5"/>';
+    svg += '<rect x="' + x(s) + '" y="' + AXH + '" width="' + (x(e) - x(s)) + '" height="' + LANEH + '" fill="#e7e9f0" opacity="0.65"/>';
     svg += '<text x="' + (x(s) + 6) + '" y="' + (AXH - 22) + '" fill="#8a8fa0" font-size="9" font-weight="700" letter-spacing="1">' + lab + '</text>';
   }
   // day boundaries + labels
   const days = [["2026-06-10T12:00","WED 10"],["2026-06-11T00:00","THU 11"],["2026-06-12T00:00","FRI 12"],["2026-06-13T00:00","SAT 13"]];
   for (const [d, lab] of days) {
-    if (x(d) > 0) svg += '<line x1="' + x(d) + '" y1="0" x2="' + x(d) + '" y2="' + HEIGHT + '" stroke="#2a2e3b" stroke-width="1"/>';
-    svg += '<text x="' + (x(d) + 5) + '" y="10" fill="#d6d9e0" font-size="10" font-weight="700">' + lab + '</text>';
+    if (x(d) > 0) svg += '<line x1="' + x(d) + '" y1="0" x2="' + x(d) + '" y2="' + HEIGHT + '" stroke="#d8dae2" stroke-width="1"/>';
+    svg += '<text x="' + (x(d) + 5) + '" y="10" fill="#23262e" font-size="10" font-weight="700">' + lab + '</text>';
   }
   // hour ticks every 3 h
   for (let h = 0; h <= 84; h += 3) {
     const hr = (12 + h) % 24, xx = h * PXH;
-    svg += '<text x="' + xx + '" y="' + (AXH - 8) + '" fill="#5c6172" font-size="9" text-anchor="middle">' + String(hr).padStart(2, "0") + '</text>';
-    svg += '<line x1="' + xx + '" y1="' + (AXH - 4) + '" x2="' + xx + '" y2="' + AXH + '" stroke="#2a2e3b"/>';
+    svg += '<text x="' + (h === 0 ? 2 : xx) + '" y="' + (AXH - 8) + '" fill="#9aa0ae" font-size="9" text-anchor="' + (h === 0 ? "start" : "middle") + '">' + String(hr).padStart(2, "0") + '</text>';
+    svg += '<line x1="' + xx + '" y1="' + (AXH - 4) + '" x2="' + xx + '" y2="' + AXH + '" stroke="#d8dae2"/>';
   }
   // lane separators
   for (let i = 0; i <= LANES.length; i++)
-    svg += '<line x1="0" y1="' + (AXH + i * LH) + '" x2="' + WIDTH + '" y2="' + (AXH + i * LH) + '" stroke="#2a2e3b" stroke-width="0.5"/>';
+    svg += '<line x1="0" y1="' + (AXH + i * LH) + '" x2="' + WIDTH + '" y2="' + (AXH + i * LH) + '" stroke="#e8eaef" stroke-width="0.5"/>';
   // window bars
   W.forEach((w, i) => {
     const [li, s, e, label, kind] = w;
-    const bx = x(s), bw = Math.max(x(e) - bx, 10), by = AXH + li * LH + 7, c = LANES[li].c;
-    svg += '<rect data-i="' + i + '" x="' + bx + '" y="' + by + '" width="' + bw + '" height="26" rx="6" ' +
-      'fill="' + c + '" fill-opacity="' + (kind === "avoid" ? 0.10 : 0.28) + '" ' +
-      'stroke="' + c + '" stroke-width="1.3"' + (kind === "avoid" ? ' stroke-dasharray="4 3"' : '') + ' cursor="pointer"/>';
-    const maxChars = Math.floor((bw - 10) / 5.6);
-    if (maxChars >= 6) svg += '<text pointer-events="none" x="' + (bx + 6) + '" y="' + (by + 17) + '" fill="' + c + '" font-size="9.5" font-weight="600">' + esc(label.length > maxChars ? label.slice(0, maxChars - 1) + "…" : label) + '</text>';
+    const bh = LH - 16;
+    const bx = x(s), bw = Math.max(x(e) - bx, 10), by = AXH + li * LH + 8, c = LANES[li].c;
+    svg += '<rect data-i="' + i + '" x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="7" ' +
+      'fill="' + c + '" fill-opacity="' + (kind === "avoid" ? 0.08 : 0.18) + '" ' +
+      'stroke="' + c + '" stroke-width="1.4"' + (kind === "avoid" ? ' stroke-dasharray="4 3"' : '') + ' cursor="pointer"/>';
+    const maxChars = Math.floor((bw - 12) / 6.3);
+    if (maxChars >= 6) svg += '<text pointer-events="none" x="' + (bx + 7) + '" y="' + (by + bh / 2 + 4) + '" fill="' + c + '" font-size="11" font-weight="600">' + esc(label.length > maxChars ? label.slice(0, maxChars - 1) + "…" : label) + '</text>';
   });
   // illustrative fatigue curve (45–90 mapped onto lane area)
   const cy = v => AXH + (1 - (v - 45) / 45) * LANEH;
-  svg += '<polyline pointer-events="none" fill="none" stroke="#9b7fd4" stroke-width="2" stroke-opacity="0.55" points="' +
+  svg += '<polyline pointer-events="none" fill="none" stroke="#8266cc" stroke-width="2" stroke-opacity="0.5" points="' +
     CURVE.map(p => (p[0] * PXH) + "," + cy(p[1])).join(" ") + '"/>';
   // now line
   const nowX = x(new Date());
   if (nowX > 0 && nowX < WIDTH)
-    svg += '<line x1="' + nowX + '" y1="12" x2="' + nowX + '" y2="' + HEIGHT + '" stroke="#e8b25a" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    svg += '<line x1="' + nowX + '" y1="12" x2="' + nowX + '" y2="' + HEIGHT + '" stroke="#c08a26" stroke-width="1.5" stroke-dasharray="5 4"/>';
   svg += '</svg>';
 
   document.getElementById("tl-scroll").innerHTML = svg;
@@ -440,6 +435,7 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
     const d = document.createElement("div");
     d.className = "tl-label";
     d.style.color = l.c;
+    d.style.height = LH + "px";
     d.textContent = l.key;
     labels.appendChild(d);
   }
