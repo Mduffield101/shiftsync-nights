@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Nights — 10–11 Jun</title>
+<style>
+  :root {
+    --bg: #12141a;
+    --card: #1b1e27;
+    --card-past: #161922;
+    --text: #d6d9e0;
+    --text-dim: #8a8fa0;
+    --line: #2a2e3b;
+    --accent: #e8b25a;          /* warm amber — easy on night eyes */
+    --sleep: #8e9ed6;
+    --caffeine: #d6a35c;
+    --food: #8fbf8f;
+    --light: #d9cd7a;
+    --safety: #d68a7a;
+    --shift: #9aa0b0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.45;
+    padding-bottom: 4rem;
+  }
+  header {
+    padding: 1.2rem 1rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.01em; }
+  header p { color: var(--text-dim); font-size: 0.82rem; margin-top: 0.25rem; }
+  .day {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--bg);
+    padding: 1rem 1rem 0.5rem;
+    font-size: 0.8rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--line);
+  }
+  .card {
+    margin: 0.6rem 0.75rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.75rem 0.85rem;
+  }
+  .card.past { opacity: 0.45; background: var(--card-past); }
+  .card.now { border-color: var(--accent); }
+  .meta { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+  .time { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.95rem; color: var(--accent); white-space: nowrap; }
+  .pill {
+    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
+    padding: 0.1rem 0.45rem; border-radius: 99px;
+    background: var(--accent); color: #14161c;
+  }
+  .pill.next { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .tag {
+    margin-left: auto;
+    font-size: 0.64rem; color: var(--text-dim);
+    border: 1px solid var(--line); border-radius: 99px;
+    padding: 0.08rem 0.45rem; white-space: nowrap;
+  }
+  h2.title { font-size: 1rem; font-weight: 650; margin-top: 0.3rem; }
+  .body { font-size: 0.86rem; color: var(--text-dim); margin-top: 0.25rem; }
+  .body strong { color: var(--text); font-weight: 600; }
+  details { margin-top: 0.45rem; }
+  summary {
+    font-size: 0.78rem; color: var(--text-dim);
+    cursor: pointer; list-style: none; user-select: none;
+  }
+  summary::before { content: "▸ "; }
+  details[open] summary::before { content: "▾ "; }
+  details .detail {
+    font-size: 0.82rem; color: var(--text-dim);
+    margin-top: 0.4rem; padding-left: 0.75rem;
+    border-left: 2px solid var(--line);
+  }
+  details .detail ul { padding-left: 1.1rem; margin: 0.3rem 0; }
+  details .detail li { margin: 0.3rem 0; }
+  details .detail em { color: var(--text); font-style: normal; font-weight: 600; }
+  .edge { border-left: 3px solid var(--shift); }
+  .edge.sleep    { border-left-color: var(--sleep); }
+  .edge.caffeine { border-left-color: var(--caffeine); }
+  .edge.food     { border-left-color: var(--food); }
+  .edge.light    { border-left-color: var(--light); }
+  .edge.safety   { border-left-color: var(--safety); }
+  footer {
+    margin: 2rem 0.75rem 0;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.74rem; color: var(--text-dim);
+  }
+  footer p { margin-bottom: 0.5rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Nights — Wed 10 &amp; Thu 11 Jun</h1>
+  <p>2 in-house nights, 19:45–08:15 · ~50 min drive · camping Fri–Sun.<br>
+  ShiftSync protocol v1.2, personal prototype — schedule, not a tracker.</p>
+</header>
+
+<main id="schedule"></main>
+
+<footer>
+  <p><strong style="color:var(--text)">This is a throwaway dogfood prototype.</strong> Hard-coded to this block. Wellness guidance, not medical advice — nothing here is a fitness-to-drive ruling.</p>
+  <p>When something feels wrong, impractical or missing while you use it, note it down — that's the point. It feeds back into the protocol.</p>
+  <p>Clause refs (§5a–§5d) point at the Project Brain; GRADE tag = evidence strength for that clause.</p>
+</footer>
+
+<script>
+// Hard-coded block: Wed 10 Jun 19:45 → Thu 11 Jun 08:15, Thu 11 Jun 19:45 → Fri 12 Jun 08:15.
+// Times are device-local (Europe/London).
+const S = [
+  { day: "Tonight — Wed 10 Jun",
+    items: [
+      { t: ["2026-06-10T16:30", "2026-06-10T17:30"], label: "16:30–17:30", type: "sleep",
+        title: "Pre-shift nap — 20–30 min", tag: "§5a",
+        body: "Set an alarm for ≤30 min. An afternoon nap doesn't shift your body clock; it just takes the edge off tonight." },
+      { t: ["2026-06-10T17:30", "2026-06-10T18:45"], label: "17:30–18:30", type: "food",
+        title: "Main meal at home + pack work food", tag: "§5b.5",
+        body: "Hot meal now. Bring meal-prepped food in — your work eating window is <strong>19:45–22:00</strong> and meal-prep is what makes it real." },
+      { t: ["2026-06-10T18:45", "2026-06-10T19:45"], label: "18:50", type: "shift",
+        title: "Leave for work (~50 min)", tag: "",
+        body: "Arrive ~19:40 for the 19:45 start." },
+      { t: ["2026-06-10T19:45", "2026-06-11T02:00"], label: "19:45–02:00", type: "light",
+        title: "Shift start — keep the light up, first half", tag: "§5b.3 · Strong",
+        body: "Where workload allows, stay near bright light until ~02:00. It holds melatonin off and keeps you alert through the night.",
+        detail: "Theatre lighting is what it is — the realistic version is “don't sit in a dim corner before 02:00”. Evidence: 21-RCT meta-analysis (Lam &amp; Chung 2021); nurses RCT showed errors −67% with evening-bright/morning-dim pattern (Cyr/Sletten 2023)." },
+      { t: ["2026-06-10T21:00", "2026-06-10T23:00"], label: "21:00–23:00", type: "caffeine",
+        title: "Caffeine dose 1 (≤200 mg)", tag: "§5b.4",
+        body: "One coffee. Block rules: <strong>max 2 doses a night, both before 02:00</strong>, no energy drinks or pre-workout any night." },
+      { t: ["2026-06-10T22:00", "2026-06-11T06:00"], label: "22:00", type: "food",
+        title: "Eating stops until 06:00", tag: "§5a · Moderate",
+        body: "Water + caffeine (within its rules) only. Eating during the biological night is what drives the metabolic hit.",
+        detail: "Escape hatch: a small low-GI snack (≤10% of daily energy) only if hunger is genuinely compromising clinical safety — that's a safety carve-out, not a snack window. Evidence: Chellappa 2025, Centofanti 2025, Manoogian 2022." },
+      { t: ["2026-06-11T01:00", "2026-06-11T02:00"], label: "01:00–02:00", type: "caffeine",
+        title: "Optional dose 2 — pair it with the nap", tag: "§5b.4",
+        body: "≤200 mg immediately <strong>before</strong> the nap (“cafnap”) — it kicks in as you wake. Hard stop: no caffeine after 02:00." },
+      { t: ["2026-06-11T02:00", "2026-06-11T03:00"], label: "02:00–03:00", type: "sleep",
+        title: "Strategic nap — ~30 min, workload permitting", tag: "§5b.2 · Strong",
+        body: "The single best-evidenced intervention in the whole protocol. Set a 30-min alarm; longer risks waking groggy.",
+        detail: "First RCT in anaesthesia residents (Schmidt 2026): a 30-min night-shift nap improved simulated crisis performance by 7.4% (p=0.018), biggest effect on leadership/resource use. 02:00–03:00 sits just ahead of the 03:00–05:00 trough. If the unit's busy and it doesn't happen, that's the rota's fault, not yours." },
+      { t: ["2026-06-11T06:15", "2026-06-11T08:15"], label: "06:15–08:15", type: "light",
+        title: "Wind the light down", tag: "§5b.3",
+        body: "Avoid bright light for the last 2 h of the shift — lets melatonin rise so this morning's sleep comes easily." },
+    ]},
+  { day: "Thu 11 Jun — between nights",
+    items: [
+      { t: ["2026-06-11T08:15", "2026-06-11T09:15"], label: "08:15", type: "safety",
+        title: "Shift ends — commute toolbox", tag: "§5d.1 · Strong",
+        body: "57% of UK trainee anaesthetists report a post-nights accident or near-miss on the drive home. The toolbox below is the default for every post-night drive.",
+        detail: "<ul>" +
+          "<li><em>Drowsy before you start?</em> Cafnap first: 150–200 mg caffeine, then a 20-min nap (alarm), then drive. Yes, this breaks the caffeine cutoff — commute safety deliberately overrides it; the sleep cost is recoverable, a crash isn't.</li>" +
+          "<li><em>2 min of cold air</em> before getting in; windows open for the first stretch.</li>" +
+          "<li><em>Share your ETA</em> before leaving.</li>" +
+          "<li><em>~50-min drive → plan one stop</em> around halfway; get out, walk a minute.</li>" +
+          "<li><em>Pull over the moment you feel drowsy.</em> Microsleeps don't send a warning first.</li>" +
+          "<li><em>Avoid the middle lane</em> on the motorway stretch.</li>" +
+          "<li><em>Amber / blue-blocker glasses</em> for the bright morning light (§5a).</li>" +
+          "</ul>The “consider not driving” escalation doesn't apply this block — it needs ≥3 consecutive nights plus three other criteria." },
+      { t: ["2026-06-11T09:15", "2026-06-11T10:00"], label: "~09:15", type: "food",
+        title: "Home — small breakfast only if hungry", tag: "§5a",
+        body: "Optional, small, balanced. Don't graze — bed is the priority." },
+      { t: ["2026-06-11T10:00", "2026-06-11T18:00"], label: "10:00–18:00", type: "sleep",
+        title: "Anchor sleep — one ~8 h block", tag: "§5b.1 · Moderate",
+        body: "Blackout, phone off. Anchoring late-morning→evening means you wake ~2 h before night 2, not 8 h before it.",
+        detail: "Sleeping the moment you crash through the door risks waking at 16:00–17:00 = 15+ h awake before the next shift ends, with the worst of it at 03:00–05:00. RCT support: Isherwood 2020. If you wake naturally a bit early, don't fight it — get up at 17:30ish rather than dozing." },
+      { t: ["2026-06-11T18:00", "2026-06-11T18:45"], label: "18:00–18:45", type: "food",
+        title: "Wake — daylight, main meal, re-pack work food", tag: "§5b.1/§5b.5",
+        body: "A few minutes outside (it's still daylight), hot meal at home, meal-prep back in the bag. It's a tight window with the 50-min drive — eating is the priority." },
+      { t: ["2026-06-11T18:45", "2026-06-11T19:45"], label: "18:50", type: "shift",
+        title: "Leave for night 2", tag: "",
+        body: "Arrive ~19:40." },
+    ]},
+  { day: "Night 2 — Thu 11 Jun (final night)",
+    items: [
+      { t: ["2026-06-11T19:45", "2026-06-12T02:00"], label: "19:45–02:00", type: "light",
+        title: "Same playbook: bright light first half", tag: "§5b.3",
+        body: "Near bright light until ~02:00, dim after 06:15. One extra job tonight: <strong>decide now what you'll eat tomorrow</strong> — rebound overeating on the day after nights is the classic failure, and you'll be packing for camping with a foggy head (§5c.5)." },
+      { t: ["2026-06-11T21:00", "2026-06-11T23:00"], label: "21:00–23:00", type: "caffeine",
+        title: "Caffeine dose 1 (≤200 mg)", tag: "§5b.4",
+        body: "Same rules as last night: max 2 doses, both before 02:00." },
+      { t: ["2026-06-11T22:00", "2026-06-12T06:00"], label: "22:00", type: "food",
+        title: "Eating stops until 06:00", tag: "§5a",
+        body: "Finish work food by 22:00. Water + in-window caffeine only overnight." },
+      { t: ["2026-06-12T01:00", "2026-06-12T02:00"], label: "01:00–02:00", type: "caffeine",
+        title: "Optional dose 2 — cafnap pairing", tag: "§5b.4",
+        body: "≤200 mg right before the nap. No caffeine after 02:00." },
+      { t: ["2026-06-12T02:00", "2026-06-12T03:00"], label: "02:00–03:00", type: "sleep",
+        title: "Strategic nap — ~30 min", tag: "§5b.2 · Strong",
+        body: "Workload permitting. Alarm at 30 min." },
+      { t: ["2026-06-12T06:15", "2026-06-12T08:15"], label: "06:15–08:15", type: "light",
+        title: "Wind the light down", tag: "§5b.3",
+        body: "Last 2 h dim. Your morning sleep today is short by design — protect it." },
+    ]},
+  { day: "Fri 12 Jun — coming off nights → camping",
+    items: [
+      { t: ["2026-06-12T08:15", "2026-06-12T09:15"], label: "08:15", type: "safety",
+        title: "Commute toolbox again — and go home, not to Cedar Valley", tag: "§5d.1 · Strong",
+        body: "Same checklist as yesterday (cafnap if drowsy, cold air, ETA, one stop, pull over early, not the middle lane). <strong>Do not drive to the campsite straight off shift</strong> — home, blackout, sleep first." },
+      { t: ["2026-06-12T09:30", "2026-06-12T13:30"], label: "09:30–13:30", type: "sleep",
+        title: "Truncated anchor sleep — ~4 h, at home", tag: "§5c.2 · Moderate",
+        body: "Short on purpose: clears the acute debt while leaving enough sleep pressure to fall asleep in the tent tonight.",
+        detail: "Day sleep self-caps at ~6.4 h regardless of how long you give it (Jackson 2014), so ~4 h is near the natural ceiling, not heroic restraint. Window flexibility: start 09:00–11:00, length 3.5–5 h. <em>If you're truly wrecked, sleep what you need</em> and accept the re-sync takes a day longer — the camping weekend is forgiving of that." },
+      { t: ["2026-06-12T13:30", "2026-06-12T14:00"], label: "13:30–14:00", type: "caffeine",
+        title: "Wake — one coffee, then caffeine's done for the day", tag: "§5c.4",
+        body: "≤200 mg on waking is fine. <strong>Nothing after ~14:00</strong> — tonight's tent sleep needs all the help it can get." },
+      { t: ["2026-06-12T14:00", "2026-06-12T21:00"], label: "14:00→", type: "light",
+        title: "Daylight + breakfast + load the car", tag: "§5c.3/§5c.5",
+        body: "Eat on waking. ≥30–60 min of outdoor light this afternoon pushes your clock back to daytime — packing, the drive, and pitching the tent all count. Normal dinner by 19:00–20:00, nothing after 21:00. You've had 4 h sleep — far safer to drive than straight off shift, but keep the toolbox live if you feel drowsy." },
+      { t: ["2026-06-12T22:00", "2026-06-12T23:00"], label: "22:00–23:00", type: "sleep",
+        title: "Bedtime — in a tent", tag: "§5c.2 + caveat",
+        body: "Normal bedtime even while camping. Tent reality: dawn light from ~04:45 plus birdsong will pull you early — <strong>pack an eye mask and earplugs</strong>.",
+        detail: "A tent is the opposite of the blackout bedroom §5c assumes — this weekend is a live stress test of the post-block protocol in a non-ideal setting. Early daylight actually helps shift your clock back to daytime; it just costs sleep length. Note what breaks." },
+    ]},
+  { day: "Sat 13 Jun — soft day",
+    items: [
+      { t: ["2026-06-13T08:00", "2026-06-13T22:00"], label: "All day", type: "shift",
+        title: "Expect ~80% — and that's fine", tag: "§5c.6 · Moderate",
+        body: "Day 1 after a block is the soft day: low cognitive load (camping is ideal), daylight through the day, early-ish bedtime 21:30–22:00, normal wake Sunday. Full re-alignment takes 1–2 days when the block went to plan." },
+    ]},
+];
+
+const main = document.getElementById("schedule");
+const now = new Date();
+let nowCard = null, nextCard = null, nextStart = null;
+
+for (const group of S) {
+  const h = document.createElement("div");
+  h.className = "day";
+  h.textContent = group.day;
+  main.appendChild(h);
+
+  for (const it of group.items) {
+    const start = new Date(it.t[0]), end = new Date(it.t[1]);
+    const card = document.createElement("article");
+    card.className = "card edge " + it.type;
+    let state = "";
+    if (end <= now) { card.classList.add("past"); }
+    else if (start <= now && now < end) { card.classList.add("now"); state = "now"; nowCard = nowCard || card; }
+    else if (!nextStart || start < nextStart) {
+      if (start > now) { nextStart = start; nextCard = card; }
+    }
+    card.innerHTML =
+      '<div class="meta"><span class="time">' + it.label + '</span>' +
+      (state === "now" ? '<span class="pill">NOW</span>' : '') +
+      (it.tag ? '<span class="tag">' + it.tag + '</span>' : '') +
+      '</div>' +
+      '<h2 class="title">' + it.title + '</h2>' +
+      '<p class="body">' + it.body + '</p>' +
+      (it.detail ? '<details><summary>more</summary><div class="detail">' + it.detail + '</div></details>' : '');
+    main.appendChild(card);
+  }
+}
+
+if (!nowCard && nextCard) {
+  const pill = document.createElement("span");
+  pill.className = "pill next";
+  pill.textContent = "NEXT";
+  nextCard.querySelector(".meta .time").after(pill);
+}
+const focus = nowCard || nextCard;
+if (focus) requestAnimationFrame(() => focus.scrollIntoView({ block: "center" }));
+
+// Re-evaluate once a minute so NOW tracking stays honest if the page is left open.
+setInterval(() => location.reload(), 15 * 60 * 1000);
+</script>
+</body>
+</html>
