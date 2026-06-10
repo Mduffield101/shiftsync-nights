@@ -93,6 +93,44 @@
   .edge.food     { border-left-color: var(--food); }
   .edge.light    { border-left-color: var(--light); }
   .edge.safety   { border-left-color: var(--safety); }
+  /* ---- block timeline ---- */
+  .tl-wrap { border-bottom: 1px solid var(--line); padding: 0.9rem 0 0.7rem; }
+  .tl-head {
+    padding: 0 1rem 0.6rem;
+    font-size: 0.8rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-dim);
+  }
+  .tl-flex { display: flex; }
+  .tl-labels { flex: 0 0 60px; }
+  .tl-axis-spacer { height: 34px; }
+  .tl-label {
+    height: 40px; display: flex; align-items: center;
+    font-size: 0.64rem; font-weight: 600; color: var(--text-dim);
+    padding-left: 0.75rem;
+  }
+  .tl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  svg.tl { display: block; }
+  .tl-detail {
+    margin: 0.7rem 0.75rem 0;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.82rem; color: var(--text-dim);
+    min-height: 3.4rem;
+  }
+  .tl-detail .t { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .tl-detail .n { color: var(--text); font-weight: 650; }
+  .tl-legend {
+    padding: 0.45rem 1rem 0;
+    font-size: 0.62rem; color: var(--text-dim);
+    display: flex; gap: 0.8rem; flex-wrap: wrap;
+  }
+  .tl-legend span::before {
+    content: ""; display: inline-block;
+    width: 9px; height: 9px; border-radius: 3px;
+    margin-right: 4px; vertical-align: -1px;
+    background: var(--sw, var(--line));
+  }
   footer {
     margin: 2rem 0.75rem 0;
     padding-top: 1rem;
@@ -109,6 +147,20 @@
   <p>2 in-house nights, 19:45–08:15 · ~50 min drive · camping Fri–Sun.<br>
   ShiftSync protocol v1.2, personal prototype — schedule, not a tracker.</p>
 </header>
+
+<section class="tl-wrap">
+  <div class="tl-head">The block at a glance — scroll →</div>
+  <div class="tl-flex">
+    <div class="tl-labels" id="tl-labels"><div class="tl-axis-spacer"></div></div>
+    <div class="tl-scroll" id="tl-scroll"></div>
+  </div>
+  <div class="tl-detail" id="tl-detail"><span class="n">Tap any bar</span> to see what it is and why it's there.</div>
+  <div class="tl-legend">
+    <span style="--sw:#8e9ed6">Sleep</span><span style="--sw:#d9cd7a">Light</span><span style="--sw:#d6a35c">Caffeine</span><span style="--sw:#8fbf8f">Meals</span><span style="--sw:#d68a7a">Drives</span>
+    <span style="--sw:#262a38">On shift</span>
+  </div>
+  <div class="tl-legend" style="padding-top:0.25rem">Dashed bars = avoid / only-if-needed. Purple curve = illustrative fatigue shape, not a computed score.</div>
+</section>
 
 <main id="schedule"></main>
 
@@ -270,11 +322,142 @@ if (!nowCard && nextCard) {
   pill.textContent = "NEXT";
   nextCard.querySelector(".meta .time").after(pill);
 }
-const focus = nowCard || nextCard;
-if (focus) requestAnimationFrame(() => focus.scrollIntoView({ block: "center" }));
+// (vertical auto-scroll removed — the block timeline is the landing view; NOW/NEXT pills mark the list)
 
 // Re-evaluate once a minute so NOW tracking stays honest if the page is left open.
 setInterval(() => location.reload(), 15 * 60 * 1000);
+
+/* ============ Block timeline (horizontal scroll across the whole block) ============ */
+(function () {
+  const T0 = new Date("2026-06-10T12:00");            // Wed noon
+  const T1 = new Date("2026-06-14T00:00");            // Sat midnight
+  const PXH = 30;                                     // px per hour
+  const AXH = 34;                                     // axis height
+  const LH  = 40;                                     // lane height
+  const LANES = [
+    { key: "Sleep",    c: "#8e9ed6" },
+    { key: "Light",    c: "#d9cd7a" },
+    { key: "Caffeine", c: "#d6a35c" },
+    { key: "Meals",    c: "#8fbf8f" },
+    { key: "Drives",   c: "#d68a7a" },
+  ];
+  // [lane, start, end, label, kind(seek|avoid), clause, why]
+  const W = [
+    [0,"2026-06-10T16:30","2026-06-10T17:30","Nap ≤30 min","seek","§5a","20–30 min inside this window, alarm set. Takes the edge off tonight without shifting your clock."],
+    [0,"2026-06-11T02:00","2026-06-11T03:00","Strategic nap","seek","§5b.2 · Strong","~30 min, workload permitting — the best-evidenced intervention in the protocol. Caffeine just before = cafnap."],
+    [0,"2026-06-11T10:00","2026-06-11T18:00","Anchor sleep ~8 h","seek","§5b.1 · Moderate","Blackout, phone off. Anchored late so you wake ~2 h before night 2, not 8 h before it."],
+    [0,"2026-06-12T02:00","2026-06-12T03:00","Strategic nap","seek","§5b.2","Same as last night — alarm at 30 min."],
+    [0,"2026-06-12T09:30","2026-06-12T13:30","Truncated anchor ~4 h","seek","§5c.2 · Moderate","Short on purpose: clears acute debt, leaves enough pressure to sleep in the tent tonight. At home, before the campsite drive."],
+    [0,"2026-06-12T22:00","2026-06-13T07:00","Tent night sleep","seek","§5c.2","Normal bedtime even camping. Eye mask + earplugs — dawn light from ~04:45."],
+    [0,"2026-06-13T21:30","2026-06-14T00:00","Early bedtime","seek","§5c.6","Soft-day close: 21:30–22:00 down, normal wake Sunday."],
+    [1,"2026-06-10T19:45","2026-06-11T02:00","Bright light","seek","§5b.3 · Strong","Stay near bright light until ~02:00 where workload allows — holds melatonin off through the night."],
+    [1,"2026-06-11T06:15","2026-06-11T08:15","Dim down","avoid","§5b.3","Avoid bright light for the last 2 h — lets melatonin rise for the morning sleep."],
+    [1,"2026-06-11T08:15","2026-06-11T09:15","Blue-blockers","avoid","§5a","Amber glasses for the bright morning drive home."],
+    [1,"2026-06-11T18:00","2026-06-11T18:45","Daylight","seek","§5b.1","A few minutes outside on waking — it's still light."],
+    [1,"2026-06-11T19:45","2026-06-12T02:00","Bright light","seek","§5b.3","Night 2, same pattern: bright until ~02:00."],
+    [1,"2026-06-12T06:15","2026-06-12T08:15","Dim down","avoid","§5b.3","Last 2 h dim — protects the short morning sleep."],
+    [1,"2026-06-12T08:15","2026-06-12T09:15","Blue-blockers","avoid","§5a","Amber glasses for the drive home."],
+    [1,"2026-06-12T14:00","2026-06-12T21:00","Afternoon daylight","seek","§5c.3 · Moderate","≥30–60 min outdoors pushes your clock back to daytime — packing and pitching the tent counts."],
+    [1,"2026-06-13T09:00","2026-06-13T19:00","Daylight all day","seek","§5c.6","Keep getting daylight — finishes the re-sync."],
+    [2,"2026-06-10T21:00","2026-06-10T23:00","Dose 1 ≤200 mg","seek","§5b.4","One coffee. Max 2 doses a night, both before 02:00. No energy drinks any night."],
+    [2,"2026-06-11T01:00","2026-06-11T02:00","Dose 2 (cafnap)","seek","§5b.4","Optional ≤200 mg immediately before the nap. Hard stop 02:00."],
+    [2,"2026-06-11T08:15","2026-06-11T08:45","Carve-out if drowsy","avoid","§5d.1","Pre-drive caffeine breaks the cutoff on purpose — commute safety overrides it."],
+    [2,"2026-06-11T21:00","2026-06-11T23:00","Dose 1 ≤200 mg","seek","§5b.4","Same rules as last night."],
+    [2,"2026-06-12T01:00","2026-06-12T02:00","Dose 2 (cafnap)","seek","§5b.4","Optional, before the nap. Nothing after 02:00."],
+    [2,"2026-06-12T08:15","2026-06-12T08:45","Carve-out if drowsy","avoid","§5d.1","Safety override again — recoverable sleep cost beats a crash."],
+    [2,"2026-06-12T13:30","2026-06-12T14:00","Wake coffee — last one","seek","§5c.4","≤200 mg on waking, then done by 14:00 to protect tent sleep."],
+    [3,"2026-06-10T17:30","2026-06-10T18:30","Main meal","seek","§5b.5","Hot meal at home + pack meal-prep for the work window."],
+    [3,"2026-06-10T19:45","2026-06-10T22:00","Work eating window","seek","§5b.5","Finish all food by 22:00."],
+    [3,"2026-06-10T22:00","2026-06-11T06:00","Fast","avoid","§5a · Moderate","No eating overnight — water + in-window caffeine only. Low-GI snack only if hunger compromises clinical safety."],
+    [3,"2026-06-11T09:15","2026-06-11T10:00","Small breakfast (optional)","seek","§5a","Only if hungry; small and balanced, then bed."],
+    [3,"2026-06-11T18:00","2026-06-11T18:45","Main meal","seek","§5b.5","Tight window with the 50-min drive — eating is the priority."],
+    [3,"2026-06-11T19:45","2026-06-11T22:00","Work eating window","seek","§5b.5","Meal-prep again; done by 22:00."],
+    [3,"2026-06-11T22:00","2026-06-12T06:00","Fast","avoid","§5a","Same as night 1."],
+    [3,"2026-06-12T13:30","2026-06-12T14:30","Breakfast on wake","seek","§5c.5","Eat on waking — you pre-planned this on night 2."],
+    [3,"2026-06-12T18:00","2026-06-12T20:00","Dinner by 20:00","seek","§5c.5","Normal evening meal, camp stove or otherwise."],
+    [3,"2026-06-12T21:00","2026-06-12T23:00","No food after 21:00","avoid","§5c.5","Protects tonight's sleep and the metabolic reset."],
+    [4,"2026-06-10T18:50","2026-06-10T19:40","Drive in","seek","","~50 min, arrive for 19:45."],
+    [4,"2026-06-11T08:15","2026-06-11T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Cafnap first if drowsy. Cold air, share ETA, one stop halfway, pull over the moment you feel drowsy, not the middle lane."],
+    [4,"2026-06-11T18:50","2026-06-11T19:40","Drive in","seek","","Night 2 commute."],
+    [4,"2026-06-12T08:15","2026-06-12T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Same checklist. Home and bed — NOT straight to Cedar Valley."],
+    [4,"2026-06-12T14:30","2026-06-12T16:00","Drive to Cedar Valley","seek","§5d.1","Whenever you're ready after the anchor sleep. Far safer than post-shift, but toolbox stays live if drowsy."],
+  ];
+  // Illustrative fatigue shape: [hours after Wed 12:00, value 45–90]
+  const CURVE = [[0,86],[3,80],[5,78],[5.6,84],[8,84],[11,78],[13,70],[14,66],[15,64],[15.6,70],[17,63],[19,62],[20.3,63],[21.5,60],[26,70],[30,82],[32,82],[35,75],[37,67],[39,60],[39.6,65],[41,57],[43,55],[44.3,56],[45.5,54],[49.5,66],[52,70],[55,68],[58,62],[67,78],[70,82],[74,84],[78,83],[81,80],[84,78]];
+  const SHIFTS = [
+    ["2026-06-10T19:45","2026-06-11T08:15","NIGHT 1"],
+    ["2026-06-11T19:45","2026-06-12T08:15","NIGHT 2"],
+  ];
+
+  const x = d => ((new Date(d) - T0) / 3600000) * PXH;
+  const WIDTH = x(T1), LANEH = LANES.length * LH, HEIGHT = AXH + LANEH + 6;
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  let svg = '<svg class="tl" width="' + WIDTH + '" height="' + HEIGHT + '" xmlns="http://www.w3.org/2000/svg">';
+
+  // shift shading + labels
+  for (const [s, e, lab] of SHIFTS) {
+    svg += '<rect x="' + x(s) + '" y="' + AXH + '" width="' + (x(e) - x(s)) + '" height="' + LANEH + '" fill="#262a38" opacity="0.5"/>';
+    svg += '<text x="' + (x(s) + 6) + '" y="' + (AXH - 22) + '" fill="#8a8fa0" font-size="9" font-weight="700" letter-spacing="1">' + lab + '</text>';
+  }
+  // day boundaries + labels
+  const days = [["2026-06-10T12:00","WED 10"],["2026-06-11T00:00","THU 11"],["2026-06-12T00:00","FRI 12"],["2026-06-13T00:00","SAT 13"]];
+  for (const [d, lab] of days) {
+    if (x(d) > 0) svg += '<line x1="' + x(d) + '" y1="0" x2="' + x(d) + '" y2="' + HEIGHT + '" stroke="#2a2e3b" stroke-width="1"/>';
+    svg += '<text x="' + (x(d) + 5) + '" y="10" fill="#d6d9e0" font-size="10" font-weight="700">' + lab + '</text>';
+  }
+  // hour ticks every 3 h
+  for (let h = 0; h <= 84; h += 3) {
+    const hr = (12 + h) % 24, xx = h * PXH;
+    svg += '<text x="' + xx + '" y="' + (AXH - 8) + '" fill="#5c6172" font-size="9" text-anchor="middle">' + String(hr).padStart(2, "0") + '</text>';
+    svg += '<line x1="' + xx + '" y1="' + (AXH - 4) + '" x2="' + xx + '" y2="' + AXH + '" stroke="#2a2e3b"/>';
+  }
+  // lane separators
+  for (let i = 0; i <= LANES.length; i++)
+    svg += '<line x1="0" y1="' + (AXH + i * LH) + '" x2="' + WIDTH + '" y2="' + (AXH + i * LH) + '" stroke="#2a2e3b" stroke-width="0.5"/>';
+  // window bars
+  W.forEach((w, i) => {
+    const [li, s, e, label, kind] = w;
+    const bx = x(s), bw = Math.max(x(e) - bx, 10), by = AXH + li * LH + 7, c = LANES[li].c;
+    svg += '<rect data-i="' + i + '" x="' + bx + '" y="' + by + '" width="' + bw + '" height="26" rx="6" ' +
+      'fill="' + c + '" fill-opacity="' + (kind === "avoid" ? 0.10 : 0.28) + '" ' +
+      'stroke="' + c + '" stroke-width="1.3"' + (kind === "avoid" ? ' stroke-dasharray="4 3"' : '') + ' cursor="pointer"/>';
+    const maxChars = Math.floor((bw - 10) / 5.6);
+    if (maxChars >= 6) svg += '<text pointer-events="none" x="' + (bx + 6) + '" y="' + (by + 17) + '" fill="' + c + '" font-size="9.5" font-weight="600">' + esc(label.length > maxChars ? label.slice(0, maxChars - 1) + "…" : label) + '</text>';
+  });
+  // illustrative fatigue curve (45–90 mapped onto lane area)
+  const cy = v => AXH + (1 - (v - 45) / 45) * LANEH;
+  svg += '<polyline pointer-events="none" fill="none" stroke="#9b7fd4" stroke-width="2" stroke-opacity="0.55" points="' +
+    CURVE.map(p => (p[0] * PXH) + "," + cy(p[1])).join(" ") + '"/>';
+  // now line
+  const nowX = x(new Date());
+  if (nowX > 0 && nowX < WIDTH)
+    svg += '<line x1="' + nowX + '" y1="12" x2="' + nowX + '" y2="' + HEIGHT + '" stroke="#e8b25a" stroke-width="1.5" stroke-dasharray="5 4"/>';
+  svg += '</svg>';
+
+  document.getElementById("tl-scroll").innerHTML = svg;
+  const labels = document.getElementById("tl-labels");
+  for (const l of LANES) {
+    const d = document.createElement("div");
+    d.className = "tl-label";
+    d.style.color = l.c;
+    d.textContent = l.key;
+    labels.appendChild(d);
+  }
+  // tap → detail
+  const detail = document.getElementById("tl-detail");
+  const fmt = d => new Date(d).toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
+  document.getElementById("tl-scroll").addEventListener("click", ev => {
+    const r = ev.target.closest("rect[data-i]");
+    if (!r) return;
+    const w = W[+r.dataset.i];
+    detail.innerHTML = '<span class="t">' + fmt(w[1]) + " – " + fmt(w[2]) + '</span> ' +
+      (w[5] ? '<span style="float:right;font-size:0.64rem;border:1px solid var(--line);border-radius:99px;padding:0.05rem 0.4rem">' + w[5] + '</span>' : '') +
+      '<br><span class="n">' + esc(w[3]) + '</span> — ' + w[6];
+  });
+  // scroll so "now" sits a third of the way in
+  const sc = document.getElementById("tl-scroll");
+  sc.scrollLeft = Math.max(0, (nowX > 0 && nowX < WIDTH ? nowX : 0) - sc.clientWidth / 3);
+})();
 </script>
 </body>
 </html>
