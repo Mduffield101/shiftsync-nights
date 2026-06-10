@@ -214,7 +214,7 @@ const S = [
           "<li><em>Pull over the moment you feel drowsy.</em> Microsleeps don't send a warning first.</li>" +
           "<li><em>Avoid the middle lane</em> on the motorway stretch.</li>" +
           "<li><em>Amber / blue-blocker glasses</em> for the bright morning light (§5a).</li>" +
-          "</ul>The “consider not driving” escalation doesn't apply this block — it needs ≥3 consecutive nights plus three other criteria." },
+          "</ul>This page can't judge your fitness to drive. If you're drowsy or unsure, nap first, delay leaving, or arrange a lift." },
       { t: ["2026-06-11T09:15", "2026-06-11T10:00"], label: "~09:15", type: "food",
         title: "Home — small breakfast only if hungry", tag: "§5a",
         body: "Optional, small, balanced. Don't graze — bed is the priority." },
@@ -279,8 +279,7 @@ const S = [
 ];
 
 const main = document.getElementById("schedule");
-const now = new Date();
-let nowCard = null, nextCard = null, nextStart = null;
+const CARDS = [];
 
 for (const group of S) {
   const h = document.createElement("div");
@@ -289,37 +288,42 @@ for (const group of S) {
   main.appendChild(h);
 
   for (const it of group.items) {
-    const start = new Date(it.t[0]), end = new Date(it.t[1]);
     const card = document.createElement("article");
     card.className = "card edge " + it.type;
-    let state = "";
-    if (end <= now) { card.classList.add("past"); }
-    else if (start <= now && now < end) { card.classList.add("now"); state = "now"; nowCard = nowCard || card; }
-    else if (!nextStart || start < nextStart) {
-      if (start > now) { nextStart = start; nextCard = card; }
-    }
     card.innerHTML =
       '<div class="meta"><span class="time">' + it.label + '</span>' +
-      (state === "now" ? '<span class="pill">NOW</span>' : '') +
       (it.tag ? '<span class="tag">' + it.tag + '</span>' : '') +
       '</div>' +
       '<h2 class="title">' + it.title + '</h2>' +
       '<p class="body">' + it.body + '</p>' +
       (it.detail ? '<details><summary>more</summary><div class="detail">' + it.detail + '</div></details>' : '');
     main.appendChild(card);
+    CARDS.push({ el: card, start: new Date(it.t[0]), end: new Date(it.t[1]) });
   }
 }
 
-if (!nowCard && nextCard) {
+function addPill(el, text, cls) {
   const pill = document.createElement("span");
-  pill.className = "pill next";
-  pill.textContent = "NEXT";
-  nextCard.querySelector(".meta .time").after(pill);
+  pill.className = "pill" + (cls ? " " + cls : "");
+  pill.textContent = text;
+  el.querySelector(".meta .time").after(pill);
 }
-// (vertical auto-scroll removed — the block timeline is the landing view; NOW/NEXT pills mark the list)
-
-// Re-evaluate once a minute so NOW tracking stays honest if the page is left open.
-setInterval(() => location.reload(), 15 * 60 * 1000);
+// Recomputed in place every minute so NOW never lingers past a hard cutoff.
+function updateListStates() {
+  const now = new Date();
+  let nowSeen = false, next = null;
+  for (const c of CARDS) {
+    c.el.classList.remove("past", "now");
+    const pill = c.el.querySelector(".pill");
+    if (pill) pill.remove();
+    if (c.end <= now) c.el.classList.add("past");
+    else if (c.start <= now) { c.el.classList.add("now"); nowSeen = true; addPill(c.el, "NOW", ""); }
+    else if (!next || c.start < next.start) next = c;
+  }
+  if (!nowSeen && next) addPill(next.el, "NEXT", "next");
+}
+updateListStates();
+setInterval(updateListStates, 60 * 1000);
 
 /* ============ Block timeline (horizontal scroll across the whole block) ============ */
 (function () {
@@ -423,10 +427,8 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
   const cy = v => AXH + (1 - (v - 45) / 45) * LANEH;
   svg += '<polyline pointer-events="none" fill="none" stroke="#8266cc" stroke-width="2" stroke-opacity="0.5" points="' +
     CURVE.map(p => (p[0] * PXH) + "," + cy(p[1])).join(" ") + '"/>';
-  // now line
-  const nowX = x(new Date());
-  if (nowX > 0 && nowX < WIDTH)
-    svg += '<line x1="' + nowX + '" y1="12" x2="' + nowX + '" y2="' + HEIGHT + '" stroke="#c08a26" stroke-width="1.5" stroke-dasharray="5 4"/>';
+  // now line (repositioned every minute; hidden when outside the block range)
+  svg += '<line id="tl-now" x1="-10" y1="12" x2="-10" y2="' + HEIGHT + '" stroke="#c08a26" stroke-width="1.5" stroke-dasharray="5 4"/>';
   svg += '</svg>';
 
   document.getElementById("tl-scroll").innerHTML = svg;
@@ -450,8 +452,18 @@ setInterval(() => location.reload(), 15 * 60 * 1000);
       (w[5] ? '<span style="float:right;font-size:0.64rem;border:1px solid var(--line);border-radius:99px;padding:0.05rem 0.4rem">' + w[5] + '</span>' : '') +
       '<br><span class="n">' + esc(w[3]) + '</span> — ' + w[6];
   });
+  const nowLine = document.getElementById("tl-now");
+  function updateNowLine() {
+    const nx = x(new Date());
+    nowLine.style.display = (nx > 0 && nx < WIDTH) ? "" : "none";
+    nowLine.setAttribute("x1", nx);
+    nowLine.setAttribute("x2", nx);
+  }
+  updateNowLine();
+  setInterval(updateNowLine, 60 * 1000);
   // scroll so "now" sits a third of the way in
   const sc = document.getElementById("tl-scroll");
+  const nowX = x(new Date());
   sc.scrollLeft = Math.max(0, (nowX > 0 && nowX < WIDTH ? nowX : 0) - sc.clientWidth / 3);
 })();
 </script>
