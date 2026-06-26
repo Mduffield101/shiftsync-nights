@@ -4,23 +4,25 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>Nights — 10–11 Jun</title>
+<title>ShiftSync Night Block Planner</title>
 <style>
   :root {
     --bg: #f6f7f9;
-    --card: #ffffff;
-    --card-past: #eef0f4;
+    --panel: #ffffff;
+    --panel-soft: #f0f2f5;
     --text: #23262e;
     --text-dim: #5f6575;
-    --line: #e2e4ea;
-    --accent: #b07a1f;
+    --line: #e1e4ea;
+    --accent: #a56d18;
     --sleep: #5468bd;
-    --caffeine: #a8732a;
-    --food: #3f8a52;
     --light: #a3901f;
-    --safety: #bf5b49;
-    --shift: #8a8fa0;
+    --caffeine: #a8732a;
+    --meals: #3f8a52;
+    --drive: #bf5b49;
+    --shift: #858b9b;
+    --curve: #8266cc;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
   body {
@@ -32,273 +34,683 @@
     padding-bottom: 4rem;
   }
   header {
-    padding: 1.2rem 1rem 0.9rem;
+    padding: 1rem 1rem 0.75rem;
     border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
   }
-  header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: 0.01em; }
-  header p { color: var(--text-dim); font-size: 0.82rem; margin-top: 0.25rem; }
-  .day {
-    position: sticky; top: 0; z-index: 5;
-    background: var(--bg);
-    padding: 1rem 1rem 0.5rem;
-    font-size: 0.8rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    color: var(--text-dim);
-    border-bottom: 1px solid var(--line);
-  }
-  .card {
-    margin: 0.6rem 0.75rem;
-    background: var(--card);
+  header > div:first-child { min-width: 0; }
+  h1 { font-size: 1.2rem; line-height: 1.15; letter-spacing: 0; }
+  header p { color: var(--text-dim); font-size: 0.8rem; margin-top: 0.25rem; }
+  .badge {
+    flex: 0 0 auto;
     border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 0.75rem 0.85rem;
-  }
-  .card.past { opacity: 0.45; background: var(--card-past); }
-  .card.now { border-color: var(--accent); }
-  .meta { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
-  .time { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 0.95rem; color: var(--accent); white-space: nowrap; }
-  .pill {
-    font-size: 0.62rem; font-weight: 700; letter-spacing: 0.06em;
-    padding: 0.1rem 0.45rem; border-radius: 99px;
-    background: var(--accent); color: #ffffff;
-  }
-  .pill.next { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
-  .tag {
-    margin-left: auto;
-    font-size: 0.64rem; color: var(--text-dim);
-    border: 1px solid var(--line); border-radius: 99px;
-    padding: 0.08rem 0.45rem; white-space: nowrap;
-  }
-  h2.title { font-size: 1rem; font-weight: 650; margin-top: 0.3rem; }
-  .body { font-size: 0.86rem; color: var(--text-dim); margin-top: 0.25rem; }
-  .body strong { color: var(--text); font-weight: 600; }
-  details { margin-top: 0.45rem; }
-  summary {
-    font-size: 0.78rem; color: var(--text-dim);
-    cursor: pointer; list-style: none; user-select: none;
-  }
-  summary::before { content: "▸ "; }
-  details[open] summary::before { content: "▾ "; }
-  details .detail {
-    font-size: 0.82rem; color: var(--text-dim);
-    margin-top: 0.4rem; padding-left: 0.75rem;
-    border-left: 2px solid var(--line);
-  }
-  details .detail ul { padding-left: 1.1rem; margin: 0.3rem 0; }
-  details .detail li { margin: 0.3rem 0; }
-  details .detail em { color: var(--text); font-style: normal; font-weight: 600; }
-  .edge { border-left: 3px solid var(--shift); }
-  .edge.sleep    { border-left-color: var(--sleep); }
-  .edge.caffeine { border-left-color: var(--caffeine); }
-  .edge.food     { border-left-color: var(--food); }
-  .edge.light    { border-left-color: var(--light); }
-  .edge.safety   { border-left-color: var(--safety); }
-  /* ---- block timeline ---- */
-  .tl-wrap { border-bottom: 1px solid var(--line); padding: 0.9rem 0 0.7rem; }
-  .tl-head {
-    padding: 0 1rem 0.6rem;
-    font-size: 0.8rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 0.08em;
+    border-radius: 999px;
     color: var(--text-dim);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 0.18rem 0.55rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--line);
+    background: #fbfcfd;
+  }
+  .field {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.55rem 0.65rem;
+    min-width: 0;
+  }
+  .field.wide { grid-column: 1 / -1; }
+  label {
+    display: block;
+    color: var(--text-dim);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+  }
+  input, select {
+    width: 100%;
+    border: 0;
+    outline: none;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.95rem;
+  }
+  .control-row {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 0.5rem;
+  }
+  button {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--text);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 0.86rem;
+    font-weight: 650;
+    padding: 0.55rem 0.75rem;
+    min-height: 40px;
+  }
+  button.primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+  button:active { transform: translateY(1px); }
+
+  .summary {
+    padding: 0.75rem 1rem;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .summary strong { color: var(--text); font-weight: 700; }
+
+  .tl-wrap {
+    border-bottom: 1px solid var(--line);
+    padding: 0.85rem 0 0.75rem;
+  }
+  .tl-head {
+    padding: 0 1rem 0.55rem;
+    color: var(--text-dim);
+    font-size: 0.72rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
   .tl-flex { display: flex; }
-  .tl-labels { flex: 0 0 60px; }
+  .tl-labels { flex: 0 0 64px; }
   .tl-axis-spacer { height: 34px; }
   .tl-label {
-    height: 40px; display: flex; align-items: center;
-    font-size: 0.64rem; font-weight: 600; color: var(--text-dim);
-    padding-left: 0.75rem;
+    display: flex;
+    align-items: center;
+    height: 54px;
+    padding-left: 0.7rem;
+    font-size: 0.64rem;
+    font-weight: 700;
   }
-  .tl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .tl-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
   svg.tl { display: block; }
   .tl-detail {
-    margin: 0.7rem 0.75rem 0;
-    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
-    padding: 0.65rem 0.85rem;
-    font-size: 0.82rem; color: var(--text-dim);
     min-height: 3.4rem;
+    margin: 0.65rem 0.75rem 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    color: var(--text-dim);
+    font-size: 0.82rem;
   }
-  .tl-detail .t { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
-  .tl-detail .n { color: var(--text); font-weight: 650; }
+  .tl-detail .t { color: var(--accent); font-weight: 750; font-variant-numeric: tabular-nums; }
+  .tl-detail .n { color: var(--text); font-weight: 700; }
+  .tl-detail .clause {
+    float: right;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.05rem 0.4rem;
+    color: var(--text-dim);
+    font-size: 0.62rem;
+  }
   .tl-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
     padding: 0.45rem 1rem 0;
-    font-size: 0.62rem; color: var(--text-dim);
-    display: flex; gap: 0.8rem; flex-wrap: wrap;
+    color: var(--text-dim);
+    font-size: 0.62rem;
   }
   .tl-legend span::before {
-    content: ""; display: inline-block;
-    width: 9px; height: 9px; border-radius: 3px;
-    margin-right: 4px; vertical-align: -1px;
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 4px;
+    border-radius: 3px;
     background: var(--sw, var(--line));
+    vertical-align: -1px;
   }
+
+  main { padding-top: 0.2rem; }
+  .day {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    color: var(--text-dim);
+    font-size: 0.74rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    padding: 0.9rem 1rem 0.45rem;
+    text-transform: uppercase;
+  }
+  .card {
+    margin: 0.58rem 0.75rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.75rem 0.85rem;
+  }
+  .card.past {
+    opacity: 0.45;
+    background: var(--panel-soft);
+  }
+  .card.now { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+  .meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .time {
+    color: var(--accent);
+    font-size: 0.92rem;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .pill {
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    padding: 0.1rem 0.45rem;
+  }
+  .pill.next {
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+  }
+  .tag {
+    margin-left: auto;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--text-dim);
+    font-size: 0.62rem;
+    padding: 0.08rem 0.45rem;
+    white-space: nowrap;
+  }
+  h2.title { font-size: 1rem; font-weight: 700; margin-top: 0.28rem; letter-spacing: 0; }
+  .body { color: var(--text-dim); font-size: 0.86rem; margin-top: 0.25rem; }
+  .body strong { color: var(--text); font-weight: 650; }
+  details { margin-top: 0.45rem; }
+  summary {
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.78rem;
+    list-style: none;
+    user-select: none;
+  }
+  summary::before { content: "> "; }
+  details[open] summary::before { content: "v "; }
+  .detail {
+    border-left: 2px solid var(--line);
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    margin-top: 0.4rem;
+    padding-left: 0.75rem;
+  }
+  .edge { border-left: 3px solid var(--shift); }
+  .edge.sleep { border-left-color: var(--sleep); }
+  .edge.light { border-left-color: var(--light); }
+  .edge.caffeine { border-left-color: var(--caffeine); }
+  .edge.meals { border-left-color: var(--meals); }
+  .edge.drive { border-left-color: var(--drive); }
+
   footer {
-    margin: 2rem 0.75rem 0;
-    padding-top: 1rem;
     border-top: 1px solid var(--line);
-    font-size: 0.74rem; color: var(--text-dim);
+    color: var(--text-dim);
+    font-size: 0.74rem;
+    margin: 1.8rem 0.75rem 0;
+    padding-top: 0.9rem;
   }
   footer p { margin-bottom: 0.5rem; }
+  footer strong { color: var(--text); font-weight: 700; }
+
+  @media (min-width: 760px) {
+    body { max-width: 980px; margin: 0 auto; border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+    .controls { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .field.wide { grid-column: auto; }
+    .control-row { grid-column: span 2; align-self: end; }
+  }
+  @media (max-width: 700px) {
+    .badge { display: none; }
+  }
 </style>
 </head>
 <body>
+<header>
+  <div>
+    <h1>ShiftSync Night Block Planner</h1>
+    <p id="subtitle">Static dogfood prototype for night-shift protocol timing.</p>
+  </div>
+  <div class="badge">Wellness MVP</div>
+</header>
+
+<section class="controls" aria-label="Night block settings">
+  <div class="field">
+    <label for="firstDate">First Night</label>
+    <input id="firstDate" type="date">
+  </div>
+  <div class="field">
+    <label for="nightCount">Nights</label>
+    <select id="nightCount">
+      <option>1</option>
+      <option selected>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="shiftStart">Start</label>
+    <input id="shiftStart" type="time" value="19:45">
+  </div>
+  <div class="field">
+    <label for="shiftEnd">End</label>
+    <input id="shiftEnd" type="time" value="08:15">
+  </div>
+  <div class="field">
+    <label for="commute">Commute</label>
+    <input id="commute" type="number" min="0" max="180" step="5" value="50">
+  </div>
+  <div class="field wide">
+    <label for="chronotype">Chronotype</label>
+    <select id="chronotype">
+      <option value="-30">Morning</option>
+      <option value="0" selected>Intermediate</option>
+      <option value="30">Evening</option>
+    </select>
+  </div>
+  <div class="control-row">
+    <button class="primary" id="apply" type="button">Update</button>
+    <button id="reset" type="button">Reset</button>
+  </div>
+</section>
+
+<section class="summary" id="summary"></section>
 
 <section class="tl-wrap">
-  <div class="tl-head">Nights — Wed 10 &amp; Thu 11 Jun · scroll →</div>
+  <div class="tl-head" id="timelineHeading">Block timeline</div>
   <div class="tl-flex">
-    <div class="tl-labels" id="tl-labels"><div class="tl-axis-spacer"></div></div>
-    <div class="tl-scroll" id="tl-scroll"></div>
+    <div class="tl-labels" id="tlLabels"><div class="tl-axis-spacer"></div></div>
+    <div class="tl-scroll" id="tlScroll"></div>
   </div>
-  <div class="tl-detail" id="tl-detail"><span class="n">Tap any bar</span> to see what it is and why it's there.</div>
+  <div class="tl-detail" id="tlDetail"><span class="n">Selected window</span></div>
   <div class="tl-legend">
-    <span style="--sw:#5468bd">Sleep</span><span style="--sw:#a3901f">Light</span><span style="--sw:#a8732a">Caffeine</span><span style="--sw:#3f8a52">Meals</span><span style="--sw:#bf5b49">Drives</span>
+    <span style="--sw:#5468bd">Sleep</span>
+    <span style="--sw:#a3901f">Light</span>
+    <span style="--sw:#a8732a">Caffeine</span>
+    <span style="--sw:#3f8a52">Meals</span>
+    <span style="--sw:#bf5b49">Commute</span>
     <span style="--sw:#e7e9f0">On shift</span>
   </div>
-  <div class="tl-legend" style="padding-top:0.25rem">Dashed bars = avoid / only-if-needed. Purple curve = illustrative fatigue shape, not a computed score.</div>
+  <div class="tl-legend" style="padding-top:0.25rem">Dashed bars = avoid or only-if-needed. Purple curve = illustrative fatigue shape, not a computed score.</div>
 </section>
 
 <main id="schedule"></main>
 
 <footer>
-  <p><strong style="color:var(--text)">This is a throwaway dogfood prototype.</strong> Hard-coded to this block. Wellness guidance, not medical advice — nothing here is a fitness-to-drive ruling.</p>
-  <p>When something feels wrong, impractical or missing while you use it, note it down — that's the point. It feeds back into the protocol.</p>
-  <p>Clause refs (§5a–§5d) point at the Project Brain; GRADE tag = evidence strength for that clause.</p>
+  <p><strong>Dogfood prototype.</strong> This is wellness guidance, not a medical device or a driving-safety advisory.</p>
+  <p>Settings stay in this browser. No rota URL, name, hospital, or account data is used here.</p>
+  <p>Clause refs (§5a-§5d) point at the ShiftSync Project Brain; GRADE tags are evidence-strength markers for the protocol clause.</p>
 </footer>
 
 <script>
-// Hard-coded block: Wed 10 Jun 19:45 → Thu 11 Jun 08:15, Thu 11 Jun 19:45 → Fri 12 Jun 08:15.
-// Times are device-local (Europe/London).
-const S = [
-  { day: "Tonight — Wed 10 Jun",
-    items: [
-      { t: ["2026-06-10T16:30", "2026-06-10T17:30"], label: "16:30–17:30", type: "sleep",
-        title: "Pre-shift nap — 20–30 min", tag: "§5a",
-        body: "Set an alarm for ≤30 min. An afternoon nap doesn't shift your body clock; it just takes the edge off tonight." },
-      { t: ["2026-06-10T17:30", "2026-06-10T18:45"], label: "17:30–18:30", type: "food",
-        title: "Main meal at home + pack work food", tag: "§5b.5",
-        body: "Hot meal now. Bring meal-prepped food in — your work eating window is <strong>19:45–22:00</strong> and meal-prep is what makes it real." },
-      { t: ["2026-06-10T18:45", "2026-06-10T19:45"], label: "18:50", type: "shift",
-        title: "Leave for work (~50 min)", tag: "",
-        body: "Arrive ~19:40 for the 19:45 start." },
-      { t: ["2026-06-10T19:45", "2026-06-11T02:00"], label: "19:45–02:00", type: "light",
-        title: "Shift start — keep the light up, first half", tag: "§5b.3 · Strong",
-        body: "Where workload allows, stay near bright light until ~02:00. It holds melatonin off and keeps you alert through the night.",
-        detail: "Theatre lighting is what it is — the realistic version is “don't sit in a dim corner before 02:00”. Evidence: 21-RCT meta-analysis (Lam &amp; Chung 2021); nurses RCT showed errors −67% with evening-bright/morning-dim pattern (Cyr/Sletten 2023)." },
-      { t: ["2026-06-10T21:00", "2026-06-10T23:00"], label: "21:00–23:00", type: "caffeine",
-        title: "Caffeine dose 1 (≤200 mg)", tag: "§5b.4",
-        body: "One coffee. Block rules: <strong>max 2 doses a night, both before 02:00</strong>, no energy drinks or pre-workout any night." },
-      { t: ["2026-06-10T22:00", "2026-06-11T06:00"], label: "22:00", type: "food",
-        title: "Eating stops until 06:00", tag: "§5a · Moderate",
-        body: "Water + caffeine (within its rules) only. Eating during the biological night is what drives the metabolic hit.",
-        detail: "Escape hatch: a small low-GI snack (≤10% of daily energy) only if hunger is genuinely compromising clinical safety — that's a safety carve-out, not a snack window. Evidence: Chellappa 2025, Centofanti 2025, Manoogian 2022." },
-      { t: ["2026-06-11T01:00", "2026-06-11T02:00"], label: "01:00–02:00", type: "caffeine",
-        title: "Optional dose 2 — pair it with the nap", tag: "§5b.4",
-        body: "≤200 mg immediately <strong>before</strong> the nap (“cafnap”) — it kicks in as you wake. Hard stop: no caffeine after 02:00." },
-      { t: ["2026-06-11T02:00", "2026-06-11T03:00"], label: "02:00–03:00", type: "sleep",
-        title: "Strategic nap — ~30 min, workload permitting", tag: "§5b.2 · Strong",
-        body: "The single best-evidenced intervention in the whole protocol. Set a 30-min alarm; longer risks waking groggy.",
-        detail: "First RCT in anaesthesia residents (Schmidt 2026): a 30-min night-shift nap improved simulated crisis performance by 7.4% (p=0.018), biggest effect on leadership/resource use. 02:00–03:00 sits just ahead of the 03:00–05:00 trough. If the unit's busy and it doesn't happen, that's the rota's fault, not yours." },
-      { t: ["2026-06-11T06:15", "2026-06-11T08:15"], label: "06:15–08:15", type: "light",
-        title: "Wind the light down", tag: "§5b.3",
-        body: "Avoid bright light for the last 2 h of the shift — lets melatonin rise so this morning's sleep comes easily." },
-    ]},
-  { day: "Thu 11 Jun — between nights",
-    items: [
-      { t: ["2026-06-11T08:15", "2026-06-11T09:15"], label: "08:15", type: "safety",
-        title: "Shift ends — commute toolbox", tag: "§5d.1 · Strong",
-        body: "57% of UK trainee anaesthetists report a post-nights accident or near-miss on the drive home. The toolbox below is the default for every post-night drive.",
-        detail: "<ul>" +
-          "<li><em>Drowsy before you start?</em> Cafnap first: 150–200 mg caffeine, then a 20-min nap (alarm), then drive. Yes, this breaks the caffeine cutoff — commute safety deliberately overrides it; the sleep cost is recoverable, a crash isn't.</li>" +
-          "<li><em>2 min of cold air</em> before getting in; windows open for the first stretch.</li>" +
-          "<li><em>Share your ETA</em> before leaving.</li>" +
-          "<li><em>~50-min drive → plan one stop</em> around halfway; get out, walk a minute.</li>" +
-          "<li><em>Pull over the moment you feel drowsy.</em> Microsleeps don't send a warning first.</li>" +
-          "<li><em>Avoid the middle lane</em> on the motorway stretch.</li>" +
-          "<li><em>Amber / blue-blocker glasses</em> for the bright morning light (§5a).</li>" +
-          "</ul>This page can't judge your fitness to drive. If you're drowsy or unsure, nap first, delay leaving, or arrange a lift." },
-      { t: ["2026-06-11T09:15", "2026-06-11T10:00"], label: "~09:15", type: "food",
-        title: "Home — small breakfast only if hungry", tag: "§5a",
-        body: "Optional, small, balanced. Don't graze — bed is the priority." },
-      { t: ["2026-06-11T10:00", "2026-06-11T18:00"], label: "10:00–18:00", type: "sleep",
-        title: "Anchor sleep — one ~8 h block", tag: "§5b.1 · Moderate",
-        body: "Blackout, phone off. Anchoring late-morning→evening means you wake ~2 h before night 2, not 8 h before it.",
-        detail: "Sleeping the moment you crash through the door risks waking at 16:00–17:00 = 15+ h awake before the next shift ends, with the worst of it at 03:00–05:00. RCT support: Isherwood 2020. If you wake naturally a bit early, don't fight it — get up at 17:30ish rather than dozing." },
-      { t: ["2026-06-11T18:00", "2026-06-11T18:45"], label: "18:00–18:45", type: "food",
-        title: "Wake — daylight, main meal, re-pack work food", tag: "§5b.1/§5b.5",
-        body: "A few minutes outside (it's still daylight), hot meal at home, meal-prep back in the bag. It's a tight window with the 50-min drive — eating is the priority." },
-      { t: ["2026-06-11T18:45", "2026-06-11T19:45"], label: "18:50", type: "shift",
-        title: "Leave for night 2", tag: "",
-        body: "Arrive ~19:40." },
-    ]},
-  { day: "Night 2 — Thu 11 Jun (final night)",
-    items: [
-      { t: ["2026-06-11T19:45", "2026-06-12T02:00"], label: "19:45–02:00", type: "light",
-        title: "Same playbook: bright light first half", tag: "§5b.3",
-        body: "Near bright light until ~02:00, dim after 06:15. One extra job tonight: <strong>decide now what you'll eat tomorrow</strong> — rebound overeating on the day after nights is the classic failure (§5c.5)." },
-      { t: ["2026-06-11T21:00", "2026-06-11T23:00"], label: "21:00–23:00", type: "caffeine",
-        title: "Caffeine dose 1 (≤200 mg)", tag: "§5b.4",
-        body: "Same rules as last night: max 2 doses, both before 02:00." },
-      { t: ["2026-06-11T22:00", "2026-06-12T06:00"], label: "22:00", type: "food",
-        title: "Eating stops until 06:00", tag: "§5a",
-        body: "Finish work food by 22:00. Water + in-window caffeine only overnight." },
-      { t: ["2026-06-12T01:00", "2026-06-12T02:00"], label: "01:00–02:00", type: "caffeine",
-        title: "Optional dose 2 — cafnap pairing", tag: "§5b.4",
-        body: "≤200 mg right before the nap. No caffeine after 02:00." },
-      { t: ["2026-06-12T02:00", "2026-06-12T03:00"], label: "02:00–03:00", type: "sleep",
-        title: "Strategic nap — ~30 min", tag: "§5b.2 · Strong",
-        body: "Workload permitting. Alarm at 30 min." },
-      { t: ["2026-06-12T06:15", "2026-06-12T08:15"], label: "06:15–08:15", type: "light",
-        title: "Wind the light down", tag: "§5b.3",
-        body: "Last 2 h dim. Your morning sleep today is short by design — protect it." },
-    ]},
-  { day: "Fri 12 Jun — coming off nights",
-    items: [
-      { t: ["2026-06-12T08:15", "2026-06-12T09:15"], label: "08:15", type: "safety",
-        title: "Commute toolbox again — then straight to bed", tag: "§5d.1 · Strong",
-        body: "Same checklist as yesterday (cafnap if drowsy, cold air, ETA, one stop, pull over early, not the middle lane). <strong>Go home and sleep before anything else today</strong> — no onward errands straight off shift." },
-      { t: ["2026-06-12T09:30", "2026-06-12T13:30"], label: "09:30–13:30", type: "sleep",
-        title: "Truncated anchor sleep — ~4 h", tag: "§5c.2 · Moderate",
-        body: "Short on purpose: clears the acute debt while leaving enough sleep pressure to fall asleep at a normal bedtime tonight.",
-        detail: "Day sleep self-caps at ~6.4 h regardless of how long you give it (Jackson 2014), so ~4 h is near the natural ceiling, not heroic restraint. Window flexibility: start 09:00–11:00, length 3.5–5 h. <em>If you're truly wrecked, sleep what you need</em> and accept the re-sync takes a day longer." },
-      { t: ["2026-06-12T13:30", "2026-06-12T14:00"], label: "13:30–14:00", type: "caffeine",
-        title: "Wake — one coffee, then caffeine's done for the day", tag: "§5c.4",
-        body: "≤200 mg on waking is fine. <strong>Nothing after ~14:00</strong> — it protects tonight's sleep at a normal bedtime." },
-      { t: ["2026-06-12T14:00", "2026-06-12T21:00"], label: "14:00→", type: "light",
-        title: "Daylight + breakfast", tag: "§5c.3/§5c.5",
-        body: "Eat on waking. ≥30–60 min of outdoor light this afternoon pushes your clock back to daytime. Normal dinner by 19:00–20:00, nothing after 21:00. If you need to drive today, you've had 4 h sleep — far safer than straight off shift, but keep the toolbox live if you feel drowsy." },
-      { t: ["2026-06-12T22:00", "2026-06-12T23:00"], label: "22:00–23:00", type: "sleep",
-        title: "Bedtime — back to normal", tag: "§5c.2",
-        body: "Normal bedtime tonight. The truncated anchor this morning is what makes falling asleep now possible.",
-        detail: "If tonight's sleep environment is bright or noisy, an eye mask and earplugs protect the reset — early-morning light will pull you awake before you're recovered." },
-    ]},
-  { day: "Sat 13 Jun — soft day",
-    items: [
-      { t: ["2026-06-13T08:00", "2026-06-13T22:00"], label: "All day", type: "shift",
-        title: "Expect ~80% — and that's fine", tag: "§5c.6 · Moderate",
-        body: "Day 1 after a block is the soft day: low cognitive load, daylight through the day, early-ish bedtime 21:30–22:00, normal wake Sunday. Full re-alignment takes 1–2 days when the block went to plan." },
-    ]},
+const STORAGE_KEY = "shiftsync-nights-v2";
+const MS_MIN = 60 * 1000;
+const MS_HOUR = 60 * MS_MIN;
+const MS_DAY = 24 * MS_HOUR;
+const LANES = [
+  { key: "Sleep", type: "sleep", colour: "#5468bd" },
+  { key: "Light", type: "light", colour: "#a3901f" },
+  { key: "Caffeine", type: "caffeine", colour: "#a8732a" },
+  { key: "Meals", type: "meals", colour: "#3f8a52" },
+  { key: "Commute", type: "drive", colour: "#bf5b49" },
 ];
+const laneForType = { sleep: 0, light: 1, caffeine: 2, meals: 3, drive: 4 };
+const colourForType = { sleep: "#5468bd", light: "#a3901f", caffeine: "#a8732a", meals: "#3f8a52", drive: "#bf5b49", shift: "#858b9b" };
 
-const main = document.getElementById("schedule");
-const CARDS = [];
+const els = {
+  firstDate: document.getElementById("firstDate"),
+  nightCount: document.getElementById("nightCount"),
+  shiftStart: document.getElementById("shiftStart"),
+  shiftEnd: document.getElementById("shiftEnd"),
+  commute: document.getElementById("commute"),
+  chronotype: document.getElementById("chronotype"),
+  apply: document.getElementById("apply"),
+  reset: document.getElementById("reset"),
+  summary: document.getElementById("summary"),
+  subtitle: document.getElementById("subtitle"),
+  timelineHeading: document.getElementById("timelineHeading"),
+  tlLabels: document.getElementById("tlLabels"),
+  tlScroll: document.getElementById("tlScroll"),
+  tlDetail: document.getElementById("tlDetail"),
+  schedule: document.getElementById("schedule"),
+};
 
-for (const group of S) {
-  const h = document.createElement("div");
-  h.className = "day";
-  h.textContent = group.day;
-  main.appendChild(h);
+function pad2(n) { return String(n).padStart(2, "0"); }
+function isoDate(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+function addDays(d, days) { const x = new Date(d); x.setDate(x.getDate() + days); return x; }
+function addMinutes(d, mins) { return new Date(d.getTime() + mins * MS_MIN); }
+function atLocal(dateString, timeString) {
+  const [y, m, d] = dateString.split("-").map(Number);
+  const [hh, mm] = timeString.split(":").map(Number);
+  return new Date(y, m - 1, d, hh, mm, 0, 0);
+}
+function clock(d) { return pad2(d.getHours()) + ":" + pad2(d.getMinutes()); }
+function dayName(d) {
+  return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" });
+}
+function rangeLabel(start, end) { return clock(start) + "-" + clock(end); }
+function dayKey(d) { return isoDate(d); }
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+function formatDateTime(d) {
+  return d.toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
+}
+function defaultConfig() {
+  const tomorrow = addDays(new Date(), 1);
+  return {
+    firstDate: isoDate(tomorrow),
+    nightCount: "2",
+    shiftStart: "19:45",
+    shiftEnd: "08:15",
+    commute: "50",
+    chronotype: "0",
+  };
+}
+function getConfig() {
+  return {
+    firstDate: els.firstDate.value,
+    nightCount: els.nightCount.value,
+    shiftStart: els.shiftStart.value || "19:45",
+    shiftEnd: els.shiftEnd.value || "08:15",
+    commute: els.commute.value || "50",
+    chronotype: els.chronotype.value || "0",
+  };
+}
+function setConfig(cfg) {
+  els.firstDate.value = cfg.firstDate;
+  els.nightCount.value = cfg.nightCount;
+  els.shiftStart.value = cfg.shiftStart;
+  els.shiftEnd.value = cfg.shiftEnd;
+  els.commute.value = cfg.commute;
+  els.chronotype.value = cfg.chronotype;
+}
+function loadConfig() {
+  const fallback = defaultConfig();
+  try {
+    const stored = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    return Object.assign(fallback, stored || {});
+  } catch {
+    return fallback;
+  }
+}
+function saveConfig(cfg) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+}
 
-  for (const it of group.items) {
-    const card = document.createElement("article");
-    card.className = "card edge " + it.type;
-    card.innerHTML =
-      '<div class="meta"><span class="time">' + it.label + '</span>' +
-      (it.tag ? '<span class="tag">' + it.tag + '</span>' : '') +
-      '</div>' +
-      '<h2 class="title">' + it.title + '</h2>' +
-      '<p class="body">' + it.body + '</p>' +
-      (it.detail ? '<details><summary>more</summary><div class="detail">' + it.detail + '</div></details>' : '');
-    main.appendChild(card);
-    CARDS.push({ el: card, start: new Date(it.t[0]), end: new Date(it.t[1]) });
+function buildShifts(cfg) {
+  const shifts = [];
+  const n = Number(cfg.nightCount);
+  for (let i = 0; i < n; i++) {
+    const date = isoDate(addDays(atLocal(cfg.firstDate, "12:00"), i));
+    const start = atLocal(date, cfg.shiftStart);
+    let end = atLocal(date, cfg.shiftEnd);
+    if (end <= start) end = addDays(end, 1);
+    shifts.push({ index: i + 1, start, end });
+  }
+  return shifts;
+}
+
+function addItem(items, input) {
+  if (!input.start || !input.end || input.end <= input.start) return;
+  items.push(input);
+}
+function timeOnDate(date, hhmm) {
+  return atLocal(isoDate(date), hhmm);
+}
+function nextMorningTime(date, hhmm) {
+  return atLocal(isoDate(addDays(date, 1)), hhmm);
+}
+function humanCommute(mins) {
+  return mins === 0 ? "no commute" : mins + " min commute";
+}
+
+function buildItems(cfg, shifts) {
+  const items = [];
+  const commute = Math.max(0, Number(cfg.commute) || 0);
+  const chrono = Number(cfg.chronotype) || 0;
+
+  shifts.forEach((shift, i) => {
+    const isFirst = i === 0;
+    const isFinal = i === shifts.length - 1;
+    const nightLabel = shifts.length === 1 ? "Single night" : "Night " + shift.index + " of " + shifts.length;
+    const lightCutoff = nextMorningTime(shift.start, "02:00");
+    const foodCutoff = timeOnDate(shift.start, "22:00");
+    const fastEnd = nextMorningTime(shift.start, "06:00");
+    const napStart = nextMorningTime(shift.start, "02:00");
+    const napEnd = addMinutes(napStart, 60);
+    const dimStart = addMinutes(shift.end, -120);
+    const driveInStart = addMinutes(shift.start, -commute);
+    const driveHomeEnd = addMinutes(shift.end, commute);
+
+    if (isFirst) {
+      const preNapStart = addMinutes(shift.start, -195);
+      const preNapEnd = addMinutes(preNapStart, 60);
+      addItem(items, {
+        start: preNapStart, end: preNapEnd, type: "sleep", kind: "seek",
+        title: "Pre-shift nap - 20-30 min", tag: "§5a",
+        body: "Set an alarm. The target is a short nap that trims sleep pressure without shifting the whole day.",
+        detail: "The app should treat this as a helpful window, not a requirement. If life blocks it, the rest of the protocol still works.",
+      });
+      addItem(items, {
+        start: addMinutes(shift.start, -135), end: addMinutes(shift.start, -75), type: "meals", kind: "seek",
+        title: "Main meal + pack work food", tag: "§5b.5",
+        body: "Eat before the shift and put real food in the bag. Meal-prep is what makes the 22:00 cutoff practical.",
+      });
+    }
+
+    addItem(items, {
+      start: driveInStart, end: addMinutes(shift.start, -5), type: "drive", kind: "seek",
+      title: "Travel to work", tag: "",
+      body: "Arrive a few minutes before the shift starts. " + humanCommute(commute) + ".",
+    });
+    addItem(items, {
+      start: shift.start, end: lightCutoff, type: "light", kind: "seek",
+      title: nightLabel + " - bright light first half", tag: "§5b.3 · Strong",
+      body: "Where workload allows, stay near bright light until about 02:00. After that, begin winding the light down.",
+      detail: "Realistic version: do not sit in a dim corner early in the night. The principle is a bright-first-half, dim-final-hours pattern.",
+    });
+    addItem(items, {
+      start: addMinutes(shift.start, 75), end: addMinutes(shift.start, 195), type: "caffeine", kind: "seek",
+      title: "Caffeine dose 1", tag: "§5b.4",
+      body: "One normal dose, up to 200 mg. Block rule: max two doses per night, both before 02:00.",
+    });
+    addItem(items, {
+      start: shift.start, end: foodCutoff, type: "meals", kind: "seek",
+      title: "Work eating window", tag: "§5b.5",
+      body: "Finish planned food before 22:00. Overnight is water plus in-window caffeine.",
+    });
+    addItem(items, {
+      start: foodCutoff, end: fastEnd, type: "meals", kind: "avoid",
+      title: "No routine food overnight", tag: "§5a · Moderate",
+      body: "Water and in-window caffeine only. Keep the low-GI snack carve-out for genuine clinical-practical need.",
+      detail: "This keeps the chrononutrition rule honest without pretending a busy clinical shift is a lab protocol.",
+    });
+    addItem(items, {
+      start: nextMorningTime(shift.start, "01:00"), end: nextMorningTime(shift.start, "02:00"), type: "caffeine", kind: "seek",
+      title: "Optional dose 2 - cafnap pairing", tag: "§5b.4",
+      body: "If using a second dose, take it before the strategic nap. Hard stop: no routine caffeine after 02:00.",
+    });
+    addItem(items, {
+      start: napStart, end: napEnd, type: "sleep", kind: "seek",
+      title: "Strategic nap - about 30 min", tag: "§5b.2 · Strong",
+      body: "Workload permitting. Set an alarm; longer naps increase the chance of waking groggy.",
+    });
+    addItem(items, {
+      start: dimStart, end: shift.end, type: "light", kind: "avoid",
+      title: "Dim down for the final two hours", tag: "§5b.3",
+      body: "Reduce bright light exposure toward the end of the shift so the morning sleep window is easier to enter.",
+    });
+    addItem(items, {
+      start: shift.end, end: driveHomeEnd, type: "drive", kind: "avoid",
+      title: "Post-night commute toolbox", tag: "§5d.1 · Strong",
+      body: "Use the countermeasure set: cafnap first if drowsy, cold air, share ETA, planned stop on longer drives, pull over early if sleepiness appears.",
+      detail: "This page cannot assess you. It only keeps the harm-reduction checklist visible and non-blocking.",
+    });
+
+    if (!isFinal) {
+      const nextShift = shifts[i + 1];
+      const anchorStart = addMinutes(driveHomeEnd, 45 + chrono);
+      const latestWake = addMinutes(nextShift.start, -105);
+      const anchorEnd = new Date(Math.min(addMinutes(anchorStart, 8 * 60).getTime(), latestWake.getTime()));
+      addItem(items, {
+        start: anchorStart, end: anchorEnd, type: "sleep", kind: "seek",
+        title: "Anchor sleep between nights", tag: "§5b.1 · Moderate",
+        body: "Blackout, phone off. The aim is one protected sleep that leaves you waking close to the next shift.",
+        detail: "Chronotype shifts this window by about +/-30 min in the prototype. The real app will personalise this more carefully.",
+      });
+      addItem(items, {
+        start: anchorEnd, end: driveInStartFor(nextShift, commute), type: "meals", kind: "seek",
+        title: "Wake, daylight, main meal", tag: "§5b.1/§5b.5",
+        body: "Get light exposure, eat properly, and re-pack work food before travelling in.",
+      });
+    } else {
+      const truncatedStart = addMinutes(driveHomeEnd, 25 + chrono);
+      const truncatedEnd = addMinutes(truncatedStart, 4 * 60);
+      addItem(items, {
+        start: truncatedStart, end: truncatedEnd, type: "sleep", kind: "seek",
+        title: "Truncated anchor sleep", tag: "§5c.2 · Moderate",
+        body: "Short by design: clears acute debt while preserving enough sleep pressure for a normal bedtime.",
+        detail: "Window flexibility: start roughly 09:00-11:00 and sleep about 3.5-5 h. If you are truly wiped out, sleep what you need and accept the reset may take longer.",
+      });
+      addItem(items, {
+        start: truncatedEnd, end: addMinutes(truncatedEnd, 30), type: "caffeine", kind: "seek",
+        title: "Wake coffee - last one", tag: "§5c.4",
+        body: "One normal dose on waking is fine. Then stop caffeine for the day to protect tonight's sleep.",
+      });
+      addItem(items, {
+        start: addMinutes(truncatedEnd, 30), end: timeOnDate(truncatedEnd, "21:00"), type: "light", kind: "seek",
+        title: "Afternoon daylight", tag: "§5c.3 · Moderate",
+        body: "Get outdoor light and eat at normal daytime times. The aim is to pull the body clock back toward days.",
+      });
+      addItem(items, {
+        start: timeOnDate(truncatedEnd, "21:00"), end: timeOnDate(truncatedEnd, "23:00"), type: "meals", kind: "avoid",
+        title: "No late grazing", tag: "§5c.5",
+        body: "Protect the night-time reset: normal dinner, then stop food by about 21:00.",
+      });
+      addItem(items, {
+        start: timeOnDate(truncatedEnd, "22:00"), end: addMinutes(timeOnDate(truncatedEnd, "22:00"), 9 * 60), type: "sleep", kind: "seek",
+        title: "Normal bedtime", tag: "§5c.2",
+        body: "Back to a normal sleep window. This is what the truncated anchor was protecting.",
+      });
+      addItem(items, {
+        start: timeOnDate(addDays(truncatedEnd, 1), "08:00"), end: timeOnDate(addDays(truncatedEnd, 1), "22:00"), type: "light", kind: "seek",
+        title: "Soft day", tag: "§5c.6 · Moderate",
+        body: "Low cognitive load, daylight through the day, and an early-ish bedtime. Full realignment may take 1-2 days.",
+      });
+    }
+  });
+
+  return items.sort((a, b) => a.start - b.start || a.end - b.end);
+}
+
+function driveInStartFor(shift, commute) {
+  return addMinutes(shift.start, -commute);
+}
+
+function groupItemsByDay(items) {
+  const groups = [];
+  let current = null;
+  for (const item of items) {
+    const key = dayKey(item.start);
+    if (!current || current.key !== key) {
+      current = { key, date: item.start, items: [] };
+      groups.push(current);
+    }
+    current.items.push(item);
+  }
+  return groups;
+}
+
+let renderedItems = [];
+let renderedShifts = [];
+let timelineStart = null;
+let timelineEnd = null;
+
+function render() {
+  const cfg = getConfig();
+  saveConfig(cfg);
+  renderedShifts = buildShifts(cfg);
+  renderedItems = buildItems(cfg, renderedShifts);
+  timelineStart = addMinutes(renderedShifts[0].start, -8 * 60);
+  timelineEnd = addMinutes(renderedItems[renderedItems.length - 1].end, 120);
+
+  const first = renderedShifts[0];
+  const last = renderedShifts[renderedShifts.length - 1];
+  els.subtitle.textContent = renderedShifts.length + "-night block starting " + dayName(first.start);
+  els.summary.innerHTML =
+    "<strong>" + renderedShifts.length + " night" + (renderedShifts.length > 1 ? "s" : "") + "</strong> · " +
+    rangeLabel(first.start, first.end) + " first shift · " +
+    humanCommute(Math.max(0, Number(cfg.commute) || 0)) + " · " +
+    "recovery through " + dayName(addDays(last.end, 1)) + ".";
+  els.timelineHeading.textContent = dayName(first.start) + " to " + dayName(addDays(last.end, 1)) + " · scroll horizontally";
+  renderTimeline();
+  renderCards();
+  updateListStates();
+}
+
+function renderCards() {
+  els.schedule.innerHTML = "";
+  const groups = groupItemsByDay(renderedItems);
+  for (const group of groups) {
+    const h = document.createElement("div");
+    h.className = "day";
+    h.textContent = dayName(group.date);
+    els.schedule.appendChild(h);
+
+    for (const item of group.items) {
+      const card = document.createElement("article");
+      card.className = "card edge " + item.type;
+      card.dataset.start = item.start.toISOString();
+      card.dataset.end = item.end.toISOString();
+      card.innerHTML =
+        '<div class="meta"><span class="time">' + rangeLabel(item.start, item.end) + '</span>' +
+        (item.tag ? '<span class="tag">' + escapeHtml(item.tag) + '</span>' : '') +
+        '</div>' +
+        '<h2 class="title">' + escapeHtml(item.title) + '</h2>' +
+        '<p class="body">' + item.body + '</p>' +
+        (item.detail ? '<details><summary>more</summary><div class="detail">' + item.detail + '</div></details>' : '');
+      els.schedule.appendChild(card);
+    }
   }
 }
 
@@ -306,166 +718,166 @@ function addPill(el, text, cls) {
   const pill = document.createElement("span");
   pill.className = "pill" + (cls ? " " + cls : "");
   pill.textContent = text;
-  el.querySelector(".meta .time").after(pill);
+  const time = el.querySelector(".meta .time");
+  if (time) time.after(pill);
 }
-// Recomputed in place every minute so NOW never lingers past a hard cutoff.
+
 function updateListStates() {
   const now = new Date();
-  let nowSeen = false, next = null;
-  for (const c of CARDS) {
-    c.el.classList.remove("past", "now");
-    const pill = c.el.querySelector(".pill");
+  let nowSeen = false;
+  let next = null;
+  const cards = Array.from(document.querySelectorAll(".card"));
+  for (const card of cards) {
+    const start = new Date(card.dataset.start);
+    const end = new Date(card.dataset.end);
+    card.classList.remove("past", "now");
+    const pill = card.querySelector(".pill");
     if (pill) pill.remove();
-    if (c.end <= now) c.el.classList.add("past");
-    else if (c.start <= now) { c.el.classList.add("now"); nowSeen = true; addPill(c.el, "NOW", ""); }
-    else if (!next || c.start < next.start) next = c;
+    if (end <= now) card.classList.add("past");
+    else if (start <= now && now < end) {
+      card.classList.add("now");
+      nowSeen = true;
+      addPill(card, "NOW", "");
+    } else if (start > now && (!next || start < new Date(next.dataset.start))) {
+      next = card;
+    }
   }
-  if (!nowSeen && next) addPill(next.el, "NEXT", "next");
+  if (!nowSeen && next) addPill(next, "NEXT", "next");
+  updateNowLine();
 }
-updateListStates();
-setInterval(updateListStates, 60 * 1000);
 
-/* ============ Block timeline (horizontal scroll across the whole block) ============ */
-(function () {
-  const T0 = new Date("2026-06-10T12:00");            // Wed noon
-  const T1 = new Date("2026-06-14T00:00");            // Sat midnight
-  const PXH = 34;                                     // px per hour
-  const AXH = 34;                                     // axis height
-  // Lane height scales so the timeline fills ~62% of a portrait viewport.
-  const LH = Math.max(46, Math.min(92, Math.round((window.innerHeight * 0.62 - AXH) / 5)));
-  const LANES = [
-    { key: "Sleep",    c: "#5468bd" },
-    { key: "Light",    c: "#a3901f" },
-    { key: "Caffeine", c: "#a8732a" },
-    { key: "Meals",    c: "#3f8a52" },
-    { key: "Drives",   c: "#bf5b49" },
-  ];
-  // [lane, start, end, label, kind(seek|avoid), clause, why]
-  const W = [
-    [0,"2026-06-10T16:30","2026-06-10T17:30","Nap ≤30 min","seek","§5a","20–30 min inside this window, alarm set. Takes the edge off tonight without shifting your clock."],
-    [0,"2026-06-11T02:00","2026-06-11T03:00","Strategic nap","seek","§5b.2 · Strong","~30 min, workload permitting — the best-evidenced intervention in the protocol. Caffeine just before = cafnap."],
-    [0,"2026-06-11T10:00","2026-06-11T18:00","Anchor sleep ~8 h","seek","§5b.1 · Moderate","Blackout, phone off. Anchored late so you wake ~2 h before night 2, not 8 h before it."],
-    [0,"2026-06-12T02:00","2026-06-12T03:00","Strategic nap","seek","§5b.2","Same as last night — alarm at 30 min."],
-    [0,"2026-06-12T09:30","2026-06-12T13:30","Truncated anchor ~4 h","seek","§5c.2 · Moderate","Short on purpose: clears acute debt while leaving enough sleep pressure for a normal bedtime tonight."],
-    [0,"2026-06-12T22:00","2026-06-13T07:00","Night sleep","seek","§5c.2","Normal bedtime — the truncated anchor is what makes this possible."],
-    [0,"2026-06-13T21:30","2026-06-14T00:00","Early bedtime","seek","§5c.6","Soft-day close: 21:30–22:00 down, normal wake Sunday."],
-    [1,"2026-06-10T19:45","2026-06-11T02:00","Bright light","seek","§5b.3 · Strong","Stay near bright light until ~02:00 where workload allows — holds melatonin off through the night."],
-    [1,"2026-06-11T06:15","2026-06-11T08:15","Dim down","avoid","§5b.3","Avoid bright light for the last 2 h — lets melatonin rise for the morning sleep."],
-    [1,"2026-06-11T08:15","2026-06-11T09:15","Blue-blockers","avoid","§5a","Amber glasses for the bright morning drive home."],
-    [1,"2026-06-11T18:00","2026-06-11T18:45","Daylight","seek","§5b.1","A few minutes outside on waking — it's still light."],
-    [1,"2026-06-11T19:45","2026-06-12T02:00","Bright light","seek","§5b.3","Night 2, same pattern: bright until ~02:00."],
-    [1,"2026-06-12T06:15","2026-06-12T08:15","Dim down","avoid","§5b.3","Last 2 h dim — protects the short morning sleep."],
-    [1,"2026-06-12T08:15","2026-06-12T09:15","Blue-blockers","avoid","§5a","Amber glasses for the drive home."],
-    [1,"2026-06-12T14:00","2026-06-12T21:00","Afternoon daylight","seek","§5c.3 · Moderate","≥30–60 min outdoors this afternoon pushes your clock back to daytime."],
-    [1,"2026-06-13T09:00","2026-06-13T19:00","Daylight all day","seek","§5c.6","Keep getting daylight — finishes the re-sync."],
-    [2,"2026-06-10T21:00","2026-06-10T23:00","Dose 1 ≤200 mg","seek","§5b.4","One coffee. Max 2 doses a night, both before 02:00. No energy drinks any night."],
-    [2,"2026-06-11T01:00","2026-06-11T02:00","Dose 2 (cafnap)","seek","§5b.4","Optional ≤200 mg immediately before the nap. Hard stop 02:00."],
-    [2,"2026-06-11T08:15","2026-06-11T08:45","Carve-out if drowsy","avoid","§5d.1","Pre-drive caffeine breaks the cutoff on purpose — commute safety overrides it."],
-    [2,"2026-06-11T21:00","2026-06-11T23:00","Dose 1 ≤200 mg","seek","§5b.4","Same rules as last night."],
-    [2,"2026-06-12T01:00","2026-06-12T02:00","Dose 2 (cafnap)","seek","§5b.4","Optional, before the nap. Nothing after 02:00."],
-    [2,"2026-06-12T08:15","2026-06-12T08:45","Carve-out if drowsy","avoid","§5d.1","Safety override again — recoverable sleep cost beats a crash."],
-    [2,"2026-06-12T13:30","2026-06-12T14:00","Wake coffee — last one","seek","§5c.4","≤200 mg on waking, then done by 14:00 to protect tonight's sleep."],
-    [3,"2026-06-10T17:30","2026-06-10T18:30","Main meal","seek","§5b.5","Hot meal at home + pack meal-prep for the work window."],
-    [3,"2026-06-10T19:45","2026-06-10T22:00","Work eating window","seek","§5b.5","Finish all food by 22:00."],
-    [3,"2026-06-10T22:00","2026-06-11T06:00","Fast","avoid","§5a · Moderate","No eating overnight — water + in-window caffeine only. Low-GI snack only if hunger compromises clinical safety."],
-    [3,"2026-06-11T09:15","2026-06-11T10:00","Small breakfast (optional)","seek","§5a","Only if hungry; small and balanced, then bed."],
-    [3,"2026-06-11T18:00","2026-06-11T18:45","Main meal","seek","§5b.5","Tight window with the 50-min drive — eating is the priority."],
-    [3,"2026-06-11T19:45","2026-06-11T22:00","Work eating window","seek","§5b.5","Meal-prep again; done by 22:00."],
-    [3,"2026-06-11T22:00","2026-06-12T06:00","Fast","avoid","§5a","Same as night 1."],
-    [3,"2026-06-12T13:30","2026-06-12T14:30","Breakfast on wake","seek","§5c.5","Eat on waking — you pre-planned this on night 2."],
-    [3,"2026-06-12T18:00","2026-06-12T20:00","Dinner by 20:00","seek","§5c.5","Normal evening meal at a normal time."],
-    [3,"2026-06-12T21:00","2026-06-12T23:00","No food after 21:00","avoid","§5c.5","Protects tonight's sleep and the metabolic reset."],
-    [4,"2026-06-10T18:50","2026-06-10T19:40","Drive in","seek","","~50 min, arrive for 19:45."],
-    [4,"2026-06-11T08:15","2026-06-11T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Cafnap first if drowsy. Cold air, share ETA, one stop halfway, pull over the moment you feel drowsy, not the middle lane."],
-    [4,"2026-06-11T18:50","2026-06-11T19:40","Drive in","seek","","Night 2 commute."],
-    [4,"2026-06-12T08:15","2026-06-12T09:15","Drive home — toolbox","avoid","§5d.1 · Strong","Same checklist. Then straight home and to bed — no onward errands."],
-  ];
-  // Illustrative fatigue shape: [hours after Wed 12:00, value 45–90]
-  const CURVE = [[0,86],[3,80],[5,78],[5.6,84],[8,84],[11,78],[13,70],[14,66],[15,64],[15.6,70],[17,63],[19,62],[20.3,63],[21.5,60],[26,70],[30,82],[32,82],[35,75],[37,67],[39,60],[39.6,65],[41,57],[43,55],[44.3,56],[45.5,54],[49.5,66],[52,70],[55,68],[58,62],[67,78],[70,82],[74,84],[78,83],[81,80],[84,78]];
-  const SHIFTS = [
-    ["2026-06-10T19:45","2026-06-11T08:15","NIGHT 1"],
-    ["2026-06-11T19:45","2026-06-12T08:15","NIGHT 2"],
-  ];
+function renderTimeline() {
+  const pxPerHour = window.innerWidth < 520 ? 32 : 38;
+  const axisHeight = 34;
+  const laneHeight = Math.max(48, Math.min(78, Math.round((window.innerHeight * 0.54 - axisHeight) / LANES.length)));
+  const laneArea = laneHeight * LANES.length;
+  const totalHours = Math.max(12, (timelineEnd - timelineStart) / MS_HOUR);
+  const width = Math.round(totalHours * pxPerHour);
+  const height = axisHeight + laneArea + 6;
+  const x = d => ((d - timelineStart) / MS_HOUR) * pxPerHour;
 
-  const x = d => ((new Date(d) - T0) / 3600000) * PXH;
-  const WIDTH = x(T1), LANEH = LANES.length * LH, HEIGHT = AXH + LANEH + 6;
-  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-  let svg = '<svg class="tl" width="' + WIDTH + '" height="' + HEIGHT + '" xmlns="http://www.w3.org/2000/svg">';
+  let svg = '<svg class="tl" width="' + width + '" height="' + height + '" xmlns="http://www.w3.org/2000/svg">';
 
-  // shift shading + labels
-  for (const [s, e, lab] of SHIFTS) {
-    svg += '<rect x="' + x(s) + '" y="' + AXH + '" width="' + (x(e) - x(s)) + '" height="' + LANEH + '" fill="#e7e9f0" opacity="0.65"/>';
-    svg += '<text x="' + (x(s) + 6) + '" y="' + (AXH - 22) + '" fill="#8a8fa0" font-size="9" font-weight="700" letter-spacing="1">' + lab + '</text>';
+  for (const shift of renderedShifts) {
+    svg += '<rect x="' + x(shift.start) + '" y="' + axisHeight + '" width="' + (x(shift.end) - x(shift.start)) + '" height="' + laneArea + '" fill="#e7e9f0" opacity="0.68"/>';
+    svg += '<text x="' + (x(shift.start) + 6) + '" y="' + (axisHeight - 22) + '" fill="#858b9b" font-size="9" font-weight="750" letter-spacing="1">NIGHT ' + shift.index + '</text>';
   }
-  // day boundaries + labels
-  const days = [["2026-06-10T12:00","WED 10"],["2026-06-11T00:00","THU 11"],["2026-06-12T00:00","FRI 12"],["2026-06-13T00:00","SAT 13"]];
-  for (const [d, lab] of days) {
-    if (x(d) > 0) svg += '<line x1="' + x(d) + '" y1="0" x2="' + x(d) + '" y2="' + HEIGHT + '" stroke="#d8dae2" stroke-width="1"/>';
-    svg += '<text x="' + (x(d) + 5) + '" y="10" fill="#23262e" font-size="10" font-weight="700">' + lab + '</text>';
+
+  const dayCount = Math.ceil((timelineEnd - timelineStart) / MS_DAY) + 1;
+  for (let i = 0; i <= dayCount; i++) {
+    const d = timeOnDate(addDays(timelineStart, i), "00:00");
+    if (d < timelineStart || d > timelineEnd) continue;
+    const xx = x(d);
+    svg += '<line x1="' + xx + '" y1="0" x2="' + xx + '" y2="' + height + '" stroke="#d8dae2" stroke-width="1"/>';
+    svg += '<text x="' + (xx + 5) + '" y="10" fill="#23262e" font-size="10" font-weight="750">' + dayName(d).toUpperCase() + '</text>';
   }
-  // hour ticks every 3 h
-  for (let h = 0; h <= 84; h += 3) {
-    const hr = (12 + h) % 24, xx = h * PXH;
-    svg += '<text x="' + (h === 0 ? 2 : xx) + '" y="' + (AXH - 8) + '" fill="#9aa0ae" font-size="9" text-anchor="' + (h === 0 ? "start" : "middle") + '">' + String(hr).padStart(2, "0") + '</text>';
-    svg += '<line x1="' + xx + '" y1="' + (AXH - 4) + '" x2="' + xx + '" y2="' + AXH + '" stroke="#d8dae2"/>';
+
+  for (let h = 0; h <= totalHours; h += 3) {
+    const d = new Date(timelineStart.getTime() + h * MS_HOUR);
+    const xx = Math.round(h * pxPerHour);
+    svg += '<text x="' + (h === 0 ? 2 : xx) + '" y="' + (axisHeight - 8) + '" fill="#969daa" font-size="9" text-anchor="' + (h === 0 ? "start" : "middle") + '">' + pad2(d.getHours()) + '</text>';
+    svg += '<line x1="' + xx + '" y1="' + (axisHeight - 4) + '" x2="' + xx + '" y2="' + axisHeight + '" stroke="#d8dae2"/>';
   }
-  // lane separators
-  for (let i = 0; i <= LANES.length; i++)
-    svg += '<line x1="0" y1="' + (AXH + i * LH) + '" x2="' + WIDTH + '" y2="' + (AXH + i * LH) + '" stroke="#e8eaef" stroke-width="0.5"/>';
-  // window bars
-  W.forEach((w, i) => {
-    const [li, s, e, label, kind] = w;
-    const bh = LH - 16;
-    const bx = x(s), bw = Math.max(x(e) - bx, 10), by = AXH + li * LH + 8, c = LANES[li].c;
-    svg += '<rect data-i="' + i + '" x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="7" ' +
-      'fill="' + c + '" fill-opacity="' + (kind === "avoid" ? 0.08 : 0.18) + '" ' +
-      'stroke="' + c + '" stroke-width="1.4"' + (kind === "avoid" ? ' stroke-dasharray="4 3"' : '') + ' cursor="pointer"/>';
+
+  for (let i = 0; i <= LANES.length; i++) {
+    const y = axisHeight + i * laneHeight;
+    svg += '<line x1="0" y1="' + y + '" x2="' + width + '" y2="' + y + '" stroke="#e8eaef" stroke-width="0.5"/>';
+  }
+
+  renderedItems.forEach((item, index) => {
+    const lane = laneForType[item.type];
+    if (lane === undefined) return;
+    const bx = x(item.start);
+    const bw = Math.max(x(item.end) - bx, 10);
+    const by = axisHeight + lane * laneHeight + 8;
+    const bh = laneHeight - 16;
+    const colour = colourForType[item.type];
+    const opacity = item.kind === "avoid" ? "0.08" : "0.18";
+    const dash = item.kind === "avoid" ? ' stroke-dasharray="4 3"' : "";
+    svg += '<rect data-i="' + index + '" x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="7" fill="' + colour + '" fill-opacity="' + opacity + '" stroke="' + colour + '" stroke-width="1.4"' + dash + ' cursor="pointer"/>';
     const maxChars = Math.floor((bw - 12) / 6.3);
-    if (maxChars >= 6) svg += '<text pointer-events="none" x="' + (bx + 7) + '" y="' + (by + bh / 2 + 4) + '" fill="' + c + '" font-size="11" font-weight="600">' + esc(label.length > maxChars ? label.slice(0, maxChars - 1) + "…" : label) + '</text>';
+    if (maxChars >= 6) {
+      const label = item.title.length > maxChars ? item.title.slice(0, maxChars - 1) + "..." : item.title;
+      svg += '<text pointer-events="none" x="' + (bx + 7) + '" y="' + (by + bh / 2 + 4) + '" fill="' + colour + '" font-size="11" font-weight="650">' + escapeHtml(label) + '</text>';
+    }
   });
-  // illustrative fatigue curve (45–90 mapped onto lane area)
-  const cy = v => AXH + (1 - (v - 45) / 45) * LANEH;
-  svg += '<polyline pointer-events="none" fill="none" stroke="#8266cc" stroke-width="2" stroke-opacity="0.5" points="' +
-    CURVE.map(p => (p[0] * PXH) + "," + cy(p[1])).join(" ") + '"/>';
-  // now line (repositioned every minute; hidden when outside the block range)
-  svg += '<line id="tl-now" x1="-10" y1="12" x2="-10" y2="' + HEIGHT + '" stroke="#c08a26" stroke-width="1.5" stroke-dasharray="5 4"/>';
+
+  const curvePoints = buildFatigueCurve(width, axisHeight, laneArea, totalHours, pxPerHour);
+  svg += '<polyline pointer-events="none" fill="none" stroke="' + colourForType.shift.replace("#858b9b", "#8266cc") + '" stroke-width="2" stroke-opacity="0.5" points="' + curvePoints + '"/>';
+  svg += '<line id="tlNow" x1="-10" y1="12" x2="-10" y2="' + height + '" stroke="#c08a26" stroke-width="1.5" stroke-dasharray="5 4"/>';
   svg += '</svg>';
 
-  document.getElementById("tl-scroll").innerHTML = svg;
-  const labels = document.getElementById("tl-labels");
-  for (const l of LANES) {
-    const d = document.createElement("div");
-    d.className = "tl-label";
-    d.style.color = l.c;
-    d.style.height = LH + "px";
-    d.textContent = l.key;
-    labels.appendChild(d);
+  els.tlScroll.innerHTML = svg;
+  els.tlLabels.innerHTML = '<div class="tl-axis-spacer"></div>';
+  for (const lane of LANES) {
+    const label = document.createElement("div");
+    label.className = "tl-label";
+    label.style.color = lane.colour;
+    label.style.height = laneHeight + "px";
+    label.textContent = lane.key;
+    els.tlLabels.appendChild(label);
   }
-  // tap → detail
-  const detail = document.getElementById("tl-detail");
-  const fmt = d => new Date(d).toLocaleString("en-GB", { weekday: "short", hour: "2-digit", minute: "2-digit" });
-  document.getElementById("tl-scroll").addEventListener("click", ev => {
+
+  els.tlScroll.onclick = ev => {
     const r = ev.target.closest("rect[data-i]");
     if (!r) return;
-    const w = W[+r.dataset.i];
-    detail.innerHTML = '<span class="t">' + fmt(w[1]) + " – " + fmt(w[2]) + '</span> ' +
-      (w[5] ? '<span style="float:right;font-size:0.64rem;border:1px solid var(--line);border-radius:99px;padding:0.05rem 0.4rem">' + w[5] + '</span>' : '') +
-      '<br><span class="n">' + esc(w[3]) + '</span> — ' + w[6];
-  });
-  const nowLine = document.getElementById("tl-now");
-  function updateNowLine() {
-    const nx = x(new Date());
-    nowLine.style.display = (nx > 0 && nx < WIDTH) ? "" : "none";
-    nowLine.setAttribute("x1", nx);
-    nowLine.setAttribute("x2", nx);
-  }
+    const item = renderedItems[Number(r.dataset.i)];
+    els.tlDetail.innerHTML =
+      '<span class="t">' + formatDateTime(item.start) + ' - ' + formatDateTime(item.end) + '</span>' +
+      (item.tag ? '<span class="clause">' + escapeHtml(item.tag) + '</span>' : '') +
+      '<br><span class="n">' + escapeHtml(item.title) + '</span> - ' + item.body;
+  };
+
   updateNowLine();
-  setInterval(updateNowLine, 60 * 1000);
-  // scroll so "now" sits a third of the way in
-  const sc = document.getElementById("tl-scroll");
   const nowX = x(new Date());
-  sc.scrollLeft = Math.max(0, (nowX > 0 && nowX < WIDTH ? nowX : 0) - sc.clientWidth / 3);
-})();
+  els.tlScroll.scrollLeft = Math.max(0, (nowX > 0 && nowX < width ? nowX : x(renderedShifts[0].start)) - els.tlScroll.clientWidth / 3);
+}
+
+function buildFatigueCurve(width, axisHeight, laneArea, totalHours, pxPerHour) {
+  const points = [];
+  for (let h = 0; h <= totalHours; h += 1) {
+    const d = new Date(timelineStart.getTime() + h * MS_HOUR);
+    const hour = d.getHours() + d.getMinutes() / 60;
+    const nightLoad = renderedShifts.some(s => d >= addMinutes(s.start, -1 * 60) && d <= addMinutes(s.end, 3 * 60));
+    const circadianDip = Math.exp(-Math.pow((hour - 4) / 3.3, 2)) * 20;
+    const dayLift = Math.exp(-Math.pow((hour - 14) / 5, 2)) * 8;
+    const cumulative = renderedShifts.filter(s => d > s.end).length * 5;
+    let value = 86 + dayLift - circadianDip - cumulative;
+    if (nightLoad) value -= 8;
+    value = Math.max(48, Math.min(92, value));
+    const x = h * pxPerHour;
+    const y = axisHeight + (1 - (value - 45) / 50) * laneArea;
+    points.push(Math.round(x) + "," + Math.round(y));
+  }
+  return points.join(" ");
+}
+
+function updateNowLine() {
+  const nowLine = document.getElementById("tlNow");
+  if (!nowLine || !timelineStart || !timelineEnd) return;
+  const now = new Date();
+  const svg = els.tlScroll.querySelector("svg");
+  if (!svg) return;
+  const width = Number(svg.getAttribute("width"));
+  const nx = ((now - timelineStart) / (timelineEnd - timelineStart)) * width;
+  nowLine.style.display = nx > 0 && nx < width ? "" : "none";
+  nowLine.setAttribute("x1", nx);
+  nowLine.setAttribute("x2", nx);
+}
+
+els.apply.addEventListener("click", render);
+els.reset.addEventListener("click", () => {
+  localStorage.removeItem(STORAGE_KEY);
+  setConfig(defaultConfig());
+  render();
+});
+["firstDate", "nightCount", "shiftStart", "shiftEnd", "commute", "chronotype"].forEach(id => {
+  els[id].addEventListener("change", render);
+});
+window.addEventListener("resize", () => renderTimeline());
+setConfig(loadConfig());
+render();
+setInterval(updateListStates, 60 * 1000);
 </script>
 </body>
 </html>
