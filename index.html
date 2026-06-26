@@ -551,9 +551,9 @@ function buildItems(cfg, shifts) {
       const preNapEnd = addMinutes(shift.start, -105);
       addItem(items, {
         start: preNapStart, end: preNapEnd, type: "sleep", kind: "seek",
-        title: "Pre-shift sleep window", tag: "§5a",
-        body: "If time is tight, use a 20-30 min alarmed nap. If you can protect a longer rest before night 1, 60-90 min is reasonable.",
-        detail: "Evidence bank nuance: 20-40 min is the low-inertia nap range, while Hayashi 2009 used layered prophylactic sleep plus an in-shift nap. The app should not present 20-30 min as the only useful pre-shift sleep.",
+        title: "Aim for 90 min protected sleep", tag: "§5a",
+        body: "Physiology-first target: one full sleep cycle before night 1. If the window collapses, switch to a 20-30 min alarmed power nap.",
+        detail: "Evidence bank nuance: 20-40 min is the low-inertia fallback, not the optimum if a longer protected rest is possible. Hayashi 2009 used layered prophylactic afternoon sleep plus an in-shift nap; exact UK-doctor pre-first-night dosing remains uncertain.",
       });
       addItem(items, {
         start: addMinutes(shift.start, -135), end: addMinutes(shift.start, -75), type: "meals", kind: "seek",
