@@ -1019,7 +1019,7 @@
       </div>
       <div class="navstats" aria-live="polite">
         <span class="navstat"><strong id="visibleCount">10</strong>options</span>
-        <span class="navstat"><strong id="budgetLabel">&pound;500</strong>max</span>
+        <span class="navstat"><strong id="budgetLabel">&pound;750</strong>shown</span>
         <span class="navstat"><strong id="splitLabel">10</strong>contributors</span>
       </div>
       <div class="nav-actions">
@@ -1037,8 +1037,8 @@
 
           <div class="hero-footer" aria-label="Gift summary">
             <div class="metric">
-              <span class="value" id="topPickMetric">Beaverbrook</span>
-              <span class="label">Current top pick</span>
+              <span class="value" id="topPickMetric">West End</span>
+              <span class="label">Best fit inside target range</span>
             </div>
             <div class="metric">
               <span class="value">&pound;250-500</span>
@@ -1082,8 +1082,8 @@
           <p class="control-title">Group settings</p>
           <div class="settings-grid">
             <div class="field">
-              <label for="maxBudget">Max total</label>
-              <input id="maxBudget" type="number" min="100" max="700" step="10" value="500">
+              <label for="maxBudget">Show up to</label>
+              <input id="maxBudget" type="number" min="100" max="900" step="10" value="750">
             </div>
             <div class="field">
               <label for="contributors">Contributors</label>
@@ -1163,7 +1163,7 @@
 
       </section>
 
-      <p class="footnote">Prices are estimates from the supplied shortlist and should be checked at booking. The AIRE package is treated as the anchor because it is the original reference idea and sits near the top of the &pound;250-500 group-gift band.</p>
+      <p class="footnote">Prices are estimates from the supplied shortlist and should be checked at booking. The AIRE package is treated as the anchor because it is the original reference idea and sits near the top of the &pound;250-500 group-gift band. Beaverbrook now appears above the target range on visible July-August 2026 calendar slots.</p>
     </main>
   </div>
 
@@ -1176,17 +1176,17 @@
         id: "beaverbrook",
         name: "Beaverbrook Coach House Spa: Time Together",
         category: "spa",
-        tag: "Top pick",
+        tag: "Above target",
         location: "Surrey",
         travel: "About 35 min from Twickenham",
         duration: "Full spa day",
-        price: [300, 440],
+        price: [640, 730],
         url: "https://beaverbrook.spabooker.travel/spa-day/time-together",
-        summary: "Closest to the AIRE idea, but with a fuller day: heated indoor and outdoor pools plus a synchronised 90-minute treatment in a double room.",
-        bestFor: "Same couples-luxury feel as AIRE, with more time and a stronger wedding-gift feel.",
-        caveat: "Needs transport and availability checking.",
+        summary: "Closest to the AIRE idea, with a fuller day of facilities plus a synchronised 90-minute treatment, but current calendar slots put it above the original budget.",
+        bestFor: "A stretch option if the group decides the spa-day format is worth going beyond the target range.",
+        caveat: "Visible July-August 2026 slots show about \u00a3640 weekdays and \u00a3730 weekends; recheck the selected date before buying.",
         visual: "spa",
-        metrics: { occasion: 5, value: 5, ease: 4, near: 5, wow: 4, certainty: 4 }
+        metrics: { occasion: 5, value: 1, ease: 4, near: 5, wow: 4, certainty: 4 }
       },
       {
         id: "aire",
@@ -1282,7 +1282,7 @@
         bestFor: "A culture-led mini break that feels more gift-shaped than simple dinner tickets.",
         caveat: "Indytute lists Monday to Thursday availability, so dates may be less flexible.",
         visual: "stage",
-        metrics: { occasion: 5, value: 4, ease: 4, near: 5, wow: 4, certainty: 4 }
+        metrics: { occasion: 5, value: 5, ease: 4, near: 5, wow: 4, certainty: 4 }
       },
       {
         id: "vineyard",
@@ -1336,7 +1336,7 @@
 
     const state = {
       filter: "all",
-      selected: new Set(["beaverbrook", "aire", "overnight"])
+      selected: new Set(["westend", "aire", "overnight"])
     };
 
     const weights = [
@@ -1407,7 +1407,7 @@
     }
 
     function visibleGifts() {
-      const maxBudget = Number(elements.maxBudget.value) || 500;
+      const maxBudget = Number(elements.maxBudget.value) || 750;
       return sortedGifts(gifts.filter(gift => {
         const categoryMatch = state.filter === "all" || gift.category === state.filter;
         const budgetMatch = gift.price[0] <= maxBudget;
@@ -1437,7 +1437,7 @@
       const contributors = Math.max(1, Number(elements.contributors.value) || 10);
       const list = visibleGifts();
       elements.visibleCount.textContent = list.length;
-      elements.budgetLabel.textContent = money(Number(elements.maxBudget.value) || 500);
+      elements.budgetLabel.textContent = money(Number(elements.maxBudget.value) || 750);
       elements.splitLabel.textContent = contributors;
 
       if (!list.length) {
@@ -1452,7 +1452,7 @@
         const splitLow = Math.ceil(gift.price[0] / contributors);
         const splitHigh = Math.ceil(gift.price[1] / contributors);
         const checked = state.selected.has(gift.id) ? "checked" : "";
-        const recommendedClass = gift.id === "beaverbrook" ? " recommended" : "";
+        const recommendedClass = gift.id === "westend" ? " recommended" : "";
         return `
           <article class="gift-card" data-id="${gift.id}">
             <div class="card-top">
@@ -1516,7 +1516,9 @@
         return;
       }
 
-      elements.topPickMetric.textContent = top.name.split(":")[0].replace("The Spa at ", "");
+      elements.topPickMetric.textContent = top.id === "westend"
+        ? "West End"
+        : top.name.split(":")[0].replace("The Spa at ", "");
       elements.recommendation.innerHTML = `
         <div>
           <h3>${top.name}</h3>
