@@ -309,9 +309,8 @@
 
     .decision-panel,
     .controls,
-    .vote-board,
-    .comparison,
-    .draft-panel {
+    .shared-vote,
+    .comparison {
       border: 1px solid var(--hairline);
       border-radius: var(--radius-md);
       background: var(--surface-1);
@@ -756,55 +755,6 @@
       line-height: 1.48;
     }
 
-    .vote-strip {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-      margin-top: 12px;
-    }
-
-    .vote-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 5px;
-      min-width: 0;
-      min-height: 34px;
-      padding: 7px 8px;
-      border: 1px solid var(--hairline);
-      border-radius: var(--radius-md);
-      background: var(--canvas);
-      color: var(--ink-subtle);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
-    }
-
-    .vote-button:hover,
-    .vote-button:focus-visible {
-      border-color: var(--hairline-strong);
-      background: var(--surface-3);
-      color: var(--ink);
-    }
-
-    .vote-button[data-vote-action="pick"] {
-      border-color: rgba(94, 106, 210, 0.42);
-    }
-
-    .vote-button span {
-      display: inline-grid;
-      place-items: center;
-      min-width: 19px;
-      height: 19px;
-      border-radius: 999px;
-      background: var(--surface-2);
-      color: var(--ink-muted);
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 400;
-    }
-
     details {
       margin-top: auto;
       padding-top: 12px;
@@ -873,83 +823,45 @@
 
     .lower-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.72fr);
+      grid-template-columns: 1fr;
       gap: 16px;
       margin-top: 24px;
     }
 
-    .vote-board {
+    .shared-vote {
       margin-top: 24px;
       padding: 16px;
     }
 
-    .comparison,
-    .draft-panel {
+    .comparison {
       min-width: 0;
       padding: 16px;
     }
 
-    .vote-results {
+    .shared-vote-body {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
       margin-top: 14px;
-    }
-
-    .vote-result {
-      min-width: 0;
       padding: 12px;
       border: 1px solid var(--hairline);
       border-radius: var(--radius-md);
       background: var(--canvas);
     }
 
-    .vote-result strong {
-      display: block;
-      overflow: hidden;
-      color: var(--ink);
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.25;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .shared-vote-body p {
+      margin: 0;
+      color: var(--ink-subtle);
+      font-size: 14px;
+      line-height: 1.5;
     }
 
-    .vote-count-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 5px;
-      margin-top: 10px;
-    }
-
-    .vote-count {
-      min-height: 42px;
-      padding: 6px;
-      border: 1px solid var(--hairline);
-      border-radius: 6px;
-      background: var(--surface-1);
-      color: var(--ink-tertiary);
-      font-size: 11px;
-      line-height: 1.2;
-    }
-
-    .vote-count b {
-      display: block;
-      margin-bottom: 3px;
-      color: var(--ink-muted);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 400;
-    }
-
-    .vote-scoreline {
+    .shared-vote-actions {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 10px;
-      color: var(--ink-tertiary);
-      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
     }
 
     .table-wrap {
@@ -991,31 +903,6 @@
       border-bottom: 0;
     }
 
-    .draft {
-      min-height: 252px;
-      margin-top: 14px;
-      padding: 14px;
-      border: 1px solid var(--hairline);
-      border-radius: var(--radius-md);
-      background: var(--canvas);
-      color: var(--ink-muted);
-      font-size: 14px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-    }
-
-    .draft-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-top: 12px;
-    }
-
-    .copy-status {
-      color: var(--ink-tertiary);
-      font-size: 12px;
-    }
-
     .empty {
       display: grid;
       place-items: center;
@@ -1037,16 +924,11 @@
 
     @media (max-width: 1120px) {
       .hero,
-      .controls,
-      .lower-grid {
+      .controls {
         grid-template-columns: 1fr;
       }
 
       .grid-section {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .vote-results {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -1095,12 +977,16 @@
       .settings-grid,
       .weights,
       .grid-section,
-      .vote-results {
+      .recommendation {
         grid-template-columns: 1fr;
       }
 
-      .recommendation {
+      .shared-vote-body {
         grid-template-columns: 1fr;
+      }
+
+      .shared-vote-actions {
+        justify-content: flex-start;
       }
 
       .score-badge {
@@ -1138,7 +1024,7 @@
       </div>
       <div class="nav-actions">
         <a class="button secondary" href="#compare">Compare</a>
-        <a class="button primary" href="#shortlist">Shortlist</a>
+        <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfNzkcgPRmiGpz5OO8W7ecikONms_fRYZSPG_WWVC6zS_y6VQ/viewform" target="_blank" rel="noopener noreferrer">Vote</a>
       </div>
     </header>
 
@@ -1146,8 +1032,8 @@
       <section class="hero" aria-labelledby="page-title">
         <div class="intro">
           <p class="eyebrow">Group wedding gift comparator</p>
-          <h1 id="page-title">A clearer way to choose the gift.</h1>
-          <p class="lede">The shortlist is weighted for a Twickenham-based couple: special-occasion feel, low faff, value for money, and how easily the group can club together without guessing too much.</p>
+          <h1 id="page-title">Help choose Ewan &amp; Hannah's wedding gift.</h1>
+          <p class="lede">Scan the shortlist, compare the tradeoffs, then vote in the shared Google Form so everyone can contribute from wherever they are.</p>
 
           <div class="hero-footer" aria-label="Gift summary">
             <div class="metric">
@@ -1245,15 +1131,21 @@
 
       <section class="grid-section" id="cards" aria-label="Wedding gift options"></section>
 
-      <section class="vote-board" aria-label="Voting results">
+      <section class="shared-vote" aria-label="Shared voting">
         <div class="panel-head">
           <div class="panel-title">
-            <p class="panel-kicker">Voting board</p>
-            <h2>Group preferences</h2>
+            <p class="panel-kicker">Shared voting</p>
+            <h2>Vote in the central form</h2>
           </div>
-          <button class="button secondary" type="button" id="resetVotes">Reset votes</button>
+          <span class="status-pill">Google Forms tally</span>
         </div>
-        <div class="vote-results" id="voteResults"></div>
+        <div class="shared-vote-body">
+          <p>Each person submits one response with their name and a Pick / Maybe / Pass choice for each option. That keeps the tally central instead of tied to one browser.</p>
+          <div class="shared-vote-actions">
+            <a class="button primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfNzkcgPRmiGpz5OO8W7ecikONms_fRYZSPG_WWVC6zS_y6VQ/viewform" target="_blank" rel="noopener noreferrer">Open voting form</a>
+            <a class="button secondary" href="#compare">Compare first</a>
+          </div>
+        </div>
       </section>
 
       <section class="lower-grid" id="compare">
@@ -1268,20 +1160,6 @@
           <div class="table-wrap" id="comparisonTable"></div>
         </div>
 
-        <aside class="draft-panel">
-          <div class="panel-head">
-            <div class="panel-title">
-              <p class="panel-kicker">Group chat</p>
-              <h2>Draft message</h2>
-            </div>
-            <span class="status-pill">Editable after copy</span>
-          </div>
-          <div class="draft" id="draftText"></div>
-          <div class="draft-actions">
-            <button class="button secondary" type="button" id="copyDraft">Copy draft</button>
-            <span class="copy-status" id="copyStatus" aria-live="polite"></span>
-          </div>
-        </aside>
       </section>
 
       <p class="footnote">Prices are estimates from the supplied shortlist and should be checked at booking. The AIRE package is treated as the anchor because it is the original reference idea and sits near the top of the &pound;250-500 group-gift band.</p>
@@ -1290,6 +1168,7 @@
 
   <script>
     const currency = "\u00a3";
+    const voteFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSfNzkcgPRmiGpz5OO8W7ecikONms_fRYZSPG_WWVC6zS_y6VQ/viewform";
 
     const gifts = [
       {
@@ -1424,8 +1303,7 @@
 
     const state = {
       filter: "all",
-      selected: new Set(["beaverbrook", "aire", "overnight"]),
-      votes: loadVotes()
+      selected: new Set(["beaverbrook", "aire", "overnight"])
     };
 
     const weights = [
@@ -1447,50 +1325,10 @@
       splitLabel: document.getElementById("splitLabel"),
       selectedCount: document.getElementById("selectedCount"),
       comparisonTable: document.getElementById("comparisonTable"),
-      voteResults: document.getElementById("voteResults"),
-      resetVotes: document.getElementById("resetVotes"),
       recommendation: document.getElementById("recommendation"),
       rankList: document.getElementById("rankList"),
-      draftText: document.getElementById("draftText"),
-      copyDraft: document.getElementById("copyDraft"),
-      copyStatus: document.getElementById("copyStatus"),
       topPickMetric: document.getElementById("topPickMetric")
     };
-
-    function emptyVotes() {
-      return Object.fromEntries(gifts.map(gift => [gift.id, { pick: 0, maybe: 0, pass: 0 }]));
-    }
-
-    function loadVotes() {
-      const blank = emptyVotes();
-      try {
-        const saved = JSON.parse(localStorage.getItem("ewan-hannah-gift-votes-v1") || "{}");
-        return Object.fromEntries(gifts.map(gift => {
-          const current = saved[gift.id] || {};
-          return [gift.id, {
-            pick: Number(current.pick) || 0,
-            maybe: Number(current.maybe) || 0,
-            pass: Number(current.pass) || 0
-          }];
-        }));
-      } catch (error) {
-        return blank;
-      }
-    }
-
-    function saveVotes() {
-      localStorage.setItem("ewan-hannah-gift-votes-v1", JSON.stringify(state.votes));
-    }
-
-    function voteScore(gift) {
-      const votes = state.votes[gift.id] || { pick: 0, maybe: 0, pass: 0 };
-      return (votes.pick * 2) + votes.maybe - votes.pass;
-    }
-
-    function voteTotal(gift) {
-      const votes = state.votes[gift.id] || { pick: 0, maybe: 0, pass: 0 };
-      return votes.pick + votes.maybe + votes.pass;
-    }
 
     function money(value) {
       return `${currency}${Math.round(value)}`;
@@ -1571,7 +1409,6 @@
         elements.cards.innerHTML = '<div class="empty">No options match the current budget and filter.</div>';
         renderDecision([]);
         renderComparison();
-        renderDraft();
         return;
       }
 
@@ -1606,11 +1443,6 @@
               <div class="bar"><span style="width: ${score}%"></span></div>
             </div>
             <p class="card-copy">${gift.summary}</p>
-            <div class="vote-strip" aria-label="Vote on ${gift.name}">
-              <button class="vote-button" type="button" data-vote-id="${gift.id}" data-vote-action="pick">Pick <span>${state.votes[gift.id].pick}</span></button>
-              <button class="vote-button" type="button" data-vote-id="${gift.id}" data-vote-action="maybe">Maybe <span>${state.votes[gift.id].maybe}</span></button>
-              <button class="vote-button" type="button" data-vote-id="${gift.id}" data-vote-action="pass">Pass <span>${state.votes[gift.id].pass}</span></button>
-            </div>
             <details>
               <summary>Details</summary>
               <ul class="detail-list">
@@ -1620,6 +1452,7 @@
             </details>
             <div class="card-actions">
               <a class="card-link" href="${gift.url}" target="_blank" rel="noopener noreferrer">Open option</a>
+              <a class="card-link" href="${voteFormUrl}" target="_blank" rel="noopener noreferrer">Vote</a>
             </div>
           </article>
         `;
@@ -1631,15 +1464,11 @@
           if (event.target.checked) state.selected.add(id);
           else state.selected.delete(id);
           renderComparison();
-          renderDraft();
-          renderVotes();
         });
       });
 
       renderDecision(list);
       renderComparison();
-      renderDraft();
-      renderVotes();
     }
 
     function renderDecision(list) {
@@ -1714,48 +1543,6 @@
       `;
     }
 
-    function renderVotes() {
-      const ranked = [...gifts].sort((a, b) => voteScore(b) - voteScore(a) || voteTotal(b) - voteTotal(a) || scoreGift(b) - scoreGift(a));
-      elements.voteResults.innerHTML = ranked.map(gift => {
-        const votes = state.votes[gift.id] || { pick: 0, maybe: 0, pass: 0 };
-        const net = voteScore(gift);
-        return `
-          <div class="vote-result">
-            <strong>${gift.name}</strong>
-            <div class="vote-count-grid">
-              <span class="vote-count"><b>${votes.pick}</b>Pick</span>
-              <span class="vote-count"><b>${votes.maybe}</b>Maybe</span>
-              <span class="vote-count"><b>${votes.pass}</b>Pass</span>
-            </div>
-            <div class="vote-scoreline"><span>Vote score</span><span>${net > 0 ? "+" : ""}${net}</span></div>
-          </div>
-        `;
-      }).join("");
-    }
-
-    function renderDraft() {
-      const ranked = sortedGifts(selectedGifts().length ? selectedGifts() : visibleGifts()).slice(0, 3);
-      const voted = [...gifts].filter(voteTotal).sort((a, b) => voteScore(b) - voteScore(a)).slice(0, 3);
-      const top = ranked[0];
-      if (!top) {
-        elements.draftText.textContent = "";
-        return;
-      }
-      const lines = [
-        `I had a proper look at the wedding gift options for Ewan and Hannah. My steer would be ${top.name} (${priceRange(top)}) because ${top.bestFor.toLowerCase()}`,
-        "",
-        "Shortlist:",
-        ...ranked.map((gift, index) => `${index + 1}. ${gift.name} - ${priceRange(gift)} - ${gift.tag.toLowerCase()}; ${gift.caveat.toLowerCase()}`),
-        ...(voted.length ? ["", "Votes so far:", ...voted.map(gift => {
-          const votes = state.votes[gift.id];
-          return `${gift.name}: ${votes.pick} pick, ${votes.maybe} maybe, ${votes.pass} pass`;
-        })] : []),
-        "",
-        "If we want the safest version, we can do a flexible couples experience voucher instead. If we want the most thoughtful version, I think we should pick the exact experience."
-      ];
-      elements.draftText.textContent = lines.join("\n");
-    }
-
     document.querySelectorAll("[data-filter]").forEach(button => {
       button.addEventListener("click", () => {
         state.filter = button.dataset.filter;
@@ -1771,35 +1558,6 @@
 
     weights.forEach(([, inputId]) => {
       document.getElementById(inputId).addEventListener("input", renderCards);
-    });
-
-    document.addEventListener("click", event => {
-      const button = event.target.closest("[data-vote-id]");
-      if (!button) return;
-      const id = button.dataset.voteId;
-      const action = button.dataset.voteAction;
-      state.votes[id][action] += 1;
-      saveVotes();
-      renderCards();
-    });
-
-    elements.resetVotes.addEventListener("click", () => {
-      state.votes = emptyVotes();
-      saveVotes();
-      renderCards();
-    });
-
-    elements.copyDraft.addEventListener("click", async () => {
-      const text = elements.draftText.textContent;
-      try {
-        await navigator.clipboard.writeText(text);
-        elements.copyStatus.textContent = "Copied";
-      } catch (error) {
-        elements.copyStatus.textContent = "Select the text above to copy";
-      }
-      setTimeout(() => {
-        elements.copyStatus.textContent = "";
-      }, 2400);
     });
 
     renderCards();
