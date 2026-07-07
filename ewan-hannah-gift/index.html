@@ -1018,7 +1018,7 @@
         <span>Ewan &amp; Hannah</span>
       </div>
       <div class="navstats" aria-live="polite">
-        <span class="navstat"><strong id="visibleCount">8</strong>options</span>
+        <span class="navstat"><strong id="visibleCount">10</strong>options</span>
         <span class="navstat"><strong id="budgetLabel">&pound;500</strong>max</span>
         <span class="navstat"><strong id="splitLabel">10</strong>contributors</span>
       </div>
@@ -1072,6 +1072,7 @@
             <button class="chip" type="button" data-filter="spa">Spa</button>
             <button class="chip" type="button" data-filter="overnight">Overnight</button>
             <button class="chip" type="button" data-filter="food">Food</button>
+            <button class="chip" type="button" data-filter="culture">Culture</button>
             <button class="chip" type="button" data-filter="adventure">Adventure</button>
             <button class="chip" type="button" data-filter="flexible">Flexible</button>
           </div>
@@ -1268,6 +1269,38 @@
         metrics: { occasion: 4, value: 5, ease: 5, near: 4, wow: 3, certainty: 5 }
       },
       {
+        id: "westend",
+        name: "West End Theatre and 4* Overnight Stay",
+        category: "culture",
+        tag: "Theatre night",
+        location: "Central London",
+        travel: "Easy London overnight",
+        duration: "One night",
+        price: [399, 399],
+        url: "https://www.indytute.com/products/west-end-theatre-and-4%2A-overnight-stay-for-two",
+        summary: "Two West End show tickets plus a 4-star central London hotel stay. It turns a show into a proper newlywed night away.",
+        bestFor: "A culture-led mini break that feels more gift-shaped than simple dinner tickets.",
+        caveat: "Indytute lists Monday to Thursday availability, so dates may be less flexible.",
+        visual: "stage",
+        metrics: { occasion: 5, value: 4, ease: 4, near: 5, wow: 4, certainty: 4 }
+      },
+      {
+        id: "vineyard",
+        name: "Sussex Vineyard Glamping and Wine Tasting",
+        category: "overnight",
+        tag: "Wine escape",
+        location: "Bodiam, Sussex",
+        travel: "Car or rail + taxi",
+        duration: "One night",
+        price: [260, 260],
+        url: "https://www.indytute.com/products/luxury-under-canvas-with-wine-tasting-and-tour",
+        summary: "A bell-tent stay at Oastbrook winery with breakfast plus a vineyard tour and tasting of four wines.",
+        bestFor: "A romantic countryside mini-escape with a stronger story than a standard hotel voucher.",
+        caveat: "Seasonal availability and more travel planning than the London options.",
+        visual: "vineyard",
+        metrics: { occasion: 5, value: 5, ease: 3, near: 2, wow: 5, certainty: 3 }
+      },
+      {
         id: "balloon",
         name: "Virgin Hot Air Balloon Flight for Two",
         category: "adventure",
@@ -1392,6 +1425,8 @@
         hotel: `<svg viewBox="0 0 320 100" role="img" aria-label="Hotel room"><path d="M52 76V30h70v46M122 76V42h146v34" ${common}/><path d="M72 48h34M146 58h94M146 76V58" ${accent}/><path d="M52 76h216M72 30v46M92 30v18M122 42h146" ${common}/></svg>`,
         roof: `<svg viewBox="0 0 320 100" role="img" aria-label="Rooftop pool"><path d="M40 74h240M62 74V44h196v30M82 44l22-22h112l22 22" ${common}/><path d="M82 62c20-8 40-8 60 0s40 8 60 0 40-8 60 0" ${accent}/><path d="M108 30h104M130 22h60" ${common}/></svg>`,
         dining: `<svg viewBox="0 0 320 100" role="img" aria-label="Dining table"><circle cx="160" cy="50" r="30" ${accent}/><path d="M88 22v56M77 22v22c0 8 5 13 11 13s11-5 11-13V22M232 22v56M232 22c16 13 16 30 0 43" ${common}/><path d="M142 50h36M160 32v36" ${common}/></svg>`,
+        stage: `<svg viewBox="0 0 320 100" role="img" aria-label="Theatre stage"><path d="M42 78h236M64 78V26h192v52M92 26c10 18 10 35 0 52M228 26c-10 18-10 35 0 52" ${common}/><path d="M104 64c18-10 36-15 56-15s38 5 56 15M122 38h76M122 52h52" ${accent}/></svg>`,
+        vineyard: `<svg viewBox="0 0 320 100" role="img" aria-label="Vineyard glamping"><path d="M68 78l36-48 36 48H68ZM104 30v48M196 30c34 4 58 20 72 48M188 50c24 2 44 11 60 28" ${common}/><path d="M148 78c22-17 46-25 72-25 20 0 39 5 56 15M44 82h232M82 64h44" ${accent}/><path d="M190 35c8-9 18-9 28 0M222 42c10-8 21-7 32 3" ${common}/></svg>`,
         balloon: `<svg viewBox="0 0 320 100" role="img" aria-label="Hot air balloon"><path d="M160 12c31 0 55 20 55 48 0 15-11 26-26 32h-58c-15-6-26-17-26-32 0-28 24-48 55-48Z" ${accent}/><path d="M132 92l12-24M188 92l-12-24M142 92h36v-12h-36v12ZM160 12c-12 18-18 38-18 56M160 12c12 18 18 38 18 56" ${common}/></svg>`,
         voucher: `<svg viewBox="0 0 320 100" role="img" aria-label="Gift voucher"><path d="M62 28h196v48H62z" ${common}/><path d="M96 28v48M226 28v48M120 42h78M120 60h52" ${accent}/><path d="M74 40h10M74 64h10M236 40h10M236 64h10" ${common}/></svg>`
       };
